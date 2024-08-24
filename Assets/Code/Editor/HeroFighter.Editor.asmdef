@@ -1,0 +1,18 @@
+{
+    "name": "HeroFighter.Editor",
+    "rootNamespace": "HeroFighter.Editor",
+    "references": [
+        "GUID:5d771866b6b500d4c872ee67b538823d"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

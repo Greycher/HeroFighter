@@ -1,0 +1,283 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc33bbbd7bca45c39cf88de8fbb76aef, type: 3}
+  m_Name: HeroModel
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: heroCollection
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[HeroFighter.Runtime.Hero,
+        HeroFighter.Runtime]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 10
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: hero_a
+    - Name: $v
+      Entry: 7
+      Data: 2|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+    - Name: name
+      Entry: 1
+      Data: Hero A
+    - Name: attackPower
+      Entry: 4
+      Data: 1
+    - Name: initialHero
+      Entry: 5
+      Data: true
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: hero_b
+    - Name: $v
+      Entry: 7
+      Data: 3|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+    - Name: name
+      Entry: 1
+      Data: Hero B
+    - Name: attackPower
+      Entry: 4
+      Data: 1
+    - Name: initialHero
+      Entry: 5
+      Data: true
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: hero_c
+    - Name: $v
+      Entry: 7
+      Data: 4|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+    - Name: name
+      Entry: 1
+      Data: Hero C
+    - Name: attackPower
+      Entry: 4
+      Data: 1
+    - Name: initialHero
+      Entry: 5
+      Data: true
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: hero_d
+    - Name: $v
+      Entry: 7
+      Data: 5|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+    - Name: name
+      Entry: 1
+      Data: Hero D
+    - Name: attackPower
+      Entry: 4
+      Data: 2
+    - Name: initialHero
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: hero_e
+    - Name: $v
+      Entry: 7
+      Data: 6|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+    - Name: name
+      Entry: 1
+      Data: Hero E
+    - Name: attackPower
+      Entry: 4
+      Data: 2
+    - Name: initialHero
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: hero_f
+    - Name: $v
+      Entry: 7
+      Data: 7|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+    - Name: name
+      Entry: 1
+      Data: Hero F
+    - Name: attackPower
+      Entry: 4
+      Data: 2
+    - Name: initialHero
+      Entry: 5
+      Data: true
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: hero_g
+    - Name: $v
+      Entry: 7
+      Data: 8|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+    - Name: name
+      Entry: 1
+      Data: Hero G
+    - Name: attackPower
+      Entry: 4
+      Data: 2
+    - Name: initialHero
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: hero_h
+    - Name: $v
+      Entry: 7
+      Data: 9|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+    - Name: name
+      Entry: 1
+      Data: Hero H
+    - Name: attackPower
+      Entry: 4
+      Data: 3
+    - Name: initialHero
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: hero_i
+    - Name: $v
+      Entry: 7
+      Data: 10|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+    - Name: name
+      Entry: 1
+      Data: Hero I
+    - Name: attackPower
+      Entry: 4
+      Data: 3
+    - Name: initialHero
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: hero_j
+    - Name: $v
+      Entry: 7
+      Data: 11|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+    - Name: name
+      Entry: 1
+      Data: Hero J
+    - Name: attackPower
+      Entry: 4
+      Data: 4
+    - Name: initialHero
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
