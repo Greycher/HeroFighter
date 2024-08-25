@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using HeroFighter.Runtime.Views;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -14,10 +15,12 @@ namespace HeroFighter.Runtime
         private const string SelectedHeroPrefix = "selected_hero_";
 
         public Dictionary<string, HeroDefinition> heroDefinitionCollection = new();
+        public HeroInfoPopupView heroInfoPopupViewPrefab;
         public int baseHeroHealth = 100;
         public int experiencePerLevel = 5;
         public float healthIncreasePerLevel = 0.1f;
         public float attackPowerIncreasePerLevel = 0.1f;
+        public float heroInfoInputHoldDuration = 3f;
         
         [NonSerialized] public readonly List<string> selectedHeroIdentifiers = new(Constants.MaxSelectableHeroCount);
 

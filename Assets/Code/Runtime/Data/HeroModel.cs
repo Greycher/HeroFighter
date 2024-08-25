@@ -46,7 +46,7 @@ namespace HeroFighter.Runtime
         private int CalculateAttackPower(int level)
         {
             var ap = heroDefinition.attackPower;
-            return Mathf.FloorToInt(ap + ap * _heroConfiguration.healthIncreasePerLevel * level);
+            return Mathf.FloorToInt(ap + ap * _heroConfiguration.attackPowerIncreasePerLevel * level);
         }
 
         public void Damage(HeroModel model)

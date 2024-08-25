@@ -53,13 +53,11 @@ namespace HeroFighter.Runtime.Presenters
         private async void StartTurnAsync()
         {
             turnIndicatorView.OnTurnStarted(_playersTurn);
-            await UniTask.Delay(TimeSpan.FromSeconds(delayBeforeTurnStarts), DelayType.Realtime, 
-                PlayerLoopTiming.Update, this.GetCancellationTokenOnDestroy());
+            await UniTask.Delay(TimeSpan.FromSeconds(delayBeforeTurnStarts));
             _turnPlayed = false;
             if (!_playersTurn)
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(delayBeforeEnemyAttack), DelayType.Realtime, 
-                    PlayerLoopTiming.Update, this.GetCancellationTokenOnDestroy());
+                await UniTask.Delay(TimeSpan.FromSeconds(delayBeforeEnemyAttack));
                 var randomHero = _alivePlayerHeroes[Random.Range(0, _alivePlayerHeroes.Count)];
                 enemyHeroPresenter.Attack(randomHero);
                 EndTurn();

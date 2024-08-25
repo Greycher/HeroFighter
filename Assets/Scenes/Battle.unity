@@ -3160,7 +3160,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3247,12 +3247,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88dae44cbcf2488ea1df7b83ebf82319, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _graphics: []
   label: {fileID: 2062903994593749050}
-  button: {fileID: 6115214792747083051}
   animator: {fileID: 3746227485158648555}
   defaultAnimState: 753088835
   selectedAnimState: -1
   attackAnimState: -967235329
+  onPointerDown:
+    m_PersistentCalls:
+      m_Calls: []
+  onPointerUp:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!222 &3635807447591442200
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3444,7 +3450,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.17735851, g: 0.17735851, b: 0.17735851, a: 0.60784316}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

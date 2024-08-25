@@ -208,7 +208,7 @@ GameObject:
   - component: {fileID: 84075011}
   - component: {fileID: 84075012}
   m_Layer: 5
-  m_Name: Hero Selection
+  m_Name: Hero Selection Presenter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -823,8 +823,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -832,7 +832,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 0.3
 --- !u!1 &1375411654
 GameObject:
   m_ObjectHideFlags: 0
@@ -987,7 +987,7 @@ GameObject:
   - component: {fileID: 1490427851}
   - component: {fileID: 1490427850}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Hero Selection Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
