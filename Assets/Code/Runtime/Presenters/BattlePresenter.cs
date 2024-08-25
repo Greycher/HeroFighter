@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using HeroFighter.Runtime.Views;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Events;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
@@ -24,12 +25,13 @@ namespace HeroFighter.Runtime.Presenters
         [SerializeField] private int maxEnemyHeroLevelDiff = +2;
         [SerializeField] private float delayBeforeTurnStarts = 0.7f;
         [SerializeField] private float delayBeforeEnemyAttack = 2f;
-        
 
         private readonly List<HeroModel> _alivePlayerHeroes = new();
         private bool _playersTurn;
         private bool _battling;
         private bool _turnPlayed = true;
+
+        public UnityEvent<bool> onBattleEnd = new();
 
         private void Awake()
         {
@@ -41,12 +43,7 @@ namespace HeroFighter.Runtime.Presenters
             PrepareEnemyHero(hc, enemyHeroLvl);
         }
 
-        private void Start()
-        {
-            StartBattle();
-        }
-
-        private void StartBattle()
+        public void StartBattle()
         {
             _playersTurn = Random.value > 0.5f;
             _battling = true;
@@ -56,11 +53,13 @@ namespace HeroFighter.Runtime.Presenters
         private async void StartTurnAsync()
         {
             turnIndicatorView.OnTurnStarted(_playersTurn);
-            await UniTask.Delay(TimeSpan.FromSeconds(delayBeforeTurnStarts));
+            await UniTask.Delay(TimeSpan.FromSeconds(delayBeforeTurnStarts), DelayType.Realtime, 
+                PlayerLoopTiming.Update, this.GetCancellationTokenOnDestroy());
             _turnPlayed = false;
             if (!_playersTurn)
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(delayBeforeEnemyAttack));
+                await UniTask.Delay(TimeSpan.FromSeconds(delayBeforeEnemyAttack), DelayType.Realtime, 
+                    PlayerLoopTiming.Update, this.GetCancellationTokenOnDestroy());
                 var randomHero = _alivePlayerHeroes[Random.Range(0, _alivePlayerHeroes.Count)];
                 enemyHeroPresenter.Attack(randomHero);
                 EndTurn();
@@ -89,6 +88,7 @@ namespace HeroFighter.Runtime.Presenters
         private void EndBattle(bool playerWin)
         {
             _battling = false;
+            onBattleEnd.Invoke(playerWin);
             Debug.Log($"Battle over, player win: {playerWin}");
         }
 

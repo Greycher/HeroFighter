@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using HeroFighter.Runtime.Views;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
