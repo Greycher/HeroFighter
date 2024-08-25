@@ -7,17 +7,21 @@ using UnityEngine.Assertions;
 namespace HeroFighter.Runtime
 {
     [CreateAssetMenu(menuName = Constants.ProjectName + "/" + FileName, fileName = FileName)]
-    public class HeroModel : SerializedScriptableObject
+    public class HeroConfiguration : SerializedScriptableObject
     {
-        private const string FileName = nameof(HeroModel);
+        private const string FileName = nameof(HeroConfiguration);
         private const string IsHeroOwnedPrefPostfix = "_is_owned";
         private const string SelectedHeroPrefix = "selected_hero_";
 
-        public Dictionary<string, Hero> heroCollection = new();
+        public Dictionary<string, HeroDefinition> heroDefinitionCollection = new();
+        public int baseHeroHealth = 100;
+        public int experiencePerLevel = 5;
+        public float healthIncreasePerLevel = 0.1f;
+        public float attackPowerIncreasePerLevel = 0.1f;
         
-        [NonSerialized] public List<string> SelectedHeroIdentifiers = new(Constants.MaxSelectableHeroCount);
+        [NonSerialized] public readonly List<string> selectedHeroIdentifiers = new(Constants.MaxSelectableHeroCount);
 
-        public int TotalHeroCount => heroCollection.Count;
+        public int TotalHeroCount => heroDefinitionCollection.Count;
 
         public void Initialize()
         {
@@ -27,14 +31,14 @@ namespace HeroFighter.Runtime
                 var id = GetSelectedHeroIdentifier(i);
                 if (!String.IsNullOrEmpty(id))
                 {
-                    SelectedHeroIdentifiers.Add(id);
+                    selectedHeroIdentifiers.Add(id);
                 }
             }
         } 
  
         public void MakeSureInitialHeroesSetOwned()
         {
-            foreach (var pair in heroCollection)
+            foreach (var pair in heroDefinitionCollection)
             {
                 if (pair.Value.initialHero)
                 {
@@ -43,10 +47,10 @@ namespace HeroFighter.Runtime
             }
         }
 
-        public List<KeyValuePair<string, Hero>> GetOwnedHeroPairs()
+        public List<KeyValuePair<string, HeroDefinition>> GetOwnedHeroPairs()
         {
-            var heroes = new List<KeyValuePair<string, Hero>>();
-            foreach (var pair in heroCollection)
+            var heroes = new List<KeyValuePair<string, HeroDefinition>>();
+            foreach (var pair in heroDefinitionCollection)
             {
                 if (GetIsHeroOwned(pair.Key))
                 {
@@ -59,9 +63,9 @@ namespace HeroFighter.Runtime
 
         public bool GetIsHeroOwned(string key)
         {
-            Assert.IsTrue(heroCollection.ContainsKey(key));
+            Assert.IsTrue(heroDefinitionCollection.ContainsKey(key));
 
-            if (heroCollection[key].initialHero)
+            if (heroDefinitionCollection[key].initialHero)
             {
                 return true;
             }
@@ -71,7 +75,7 @@ namespace HeroFighter.Runtime
         
         public void SetHeroOwned(string key)
         {
-            Assert.IsTrue(heroCollection.ContainsKey(key));
+            Assert.IsTrue(heroDefinitionCollection.ContainsKey(key));
             PlayerPrefs.SetInt(GetIsHeroOwnedPrefKey(key), 1);
         }
 
@@ -99,10 +103,32 @@ namespace HeroFighter.Runtime
 
         public void SaveSelectedHeroes()
         {
-            for (var i = 0; i < SelectedHeroIdentifiers.Count; i++)
+            for (var i = 0; i < selectedHeroIdentifiers.Count; i++)
             {
-                SetSelectedHeroKey(i, SelectedHeroIdentifiers[i]);
+                SetSelectedHeroKey(i, selectedHeroIdentifiers[i]);
             }
+        }
+        
+        private const string HeroExperiencePostfix = "_experience";
+
+        public int GetExperience(string heroId)
+        {
+            return PlayerPrefs.GetInt(GetExperiencePrefKey(heroId), 0);
+        } 
+        
+        public void SetExperience(string heroId, int experience)
+        {
+            PlayerPrefs.SetInt(GetExperiencePrefKey(heroId), experience);
+        } 
+        
+        private string GetExperiencePrefKey(string heroId)
+        {
+            return $"{heroId}{HeroExperiencePostfix}";
+        }
+        
+        public int GetLevel(string heroId)
+        {
+            return GetExperience(heroId) / experiencePerLevel;
         }
     }
 }

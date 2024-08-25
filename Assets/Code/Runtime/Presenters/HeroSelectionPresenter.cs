@@ -1,59 +1,75 @@
-using System;
 using System.Collections.Generic;
 using HeroFighter.Runtime.Views;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace HeroFighter.Runtime.Presenters
 {
     public class HeroSelectionPresenter : MonoBehaviour
     {
-        [SerializeField] private HeroView heroViewTemplate; 
+        [SerializeField] private HeroPresenter heroPresenterTemplate; 
         [SerializeField] private Button notOwnedHeroViewTemplate;
         [SerializeField] private Button battleButton;
         
-        private HeroModel _heroModel;
-        private List<HeroView> _heroViews = new List<HeroView>();
-        private List<Button> _notOwnedHeroViews = new List<Button>();
+        private HeroConfiguration _heroConfiguration;
+        private readonly List<HeroPresenter> _heroPresenters = new List<HeroPresenter>();
+        private readonly List<Button> _notOwnedHeroViews = new List<Button>();
 
         private void Awake()
         {
-            heroViewTemplate.gameObject.SetActive(false);
+            heroPresenterTemplate.gameObject.SetActive(false);
             notOwnedHeroViewTemplate.gameObject.SetActive(false);
-            _heroModel = GameContext.Instance.heroModel;
+            _heroConfiguration = GameContext.Instance.heroConfiguration;
         }
 
         private void Start()
         {
-            var ownedHeroPairs = _heroModel.GetOwnedHeroPairs();
+            var hc = _heroConfiguration;
+            PopulatedHeroPresenters(hc);
+            battleButton.onClick.AddListener(OnBattleClicked);
+        }
+
+        private void PopulatedHeroPresenters(HeroConfiguration hc)
+        {
+            PopulateOwnedHeroPresenters(hc);
+            PopulateNotOwnedHeroViews();
+        }
+
+        private void PopulateOwnedHeroPresenters(HeroConfiguration hc)
+        {
+            var ownedHeroPairs = hc.GetOwnedHeroPairs();
             foreach (var pair in ownedHeroPairs)
             {
-                var view = Instantiate(heroViewTemplate, heroViewTemplate.transform.parent);
-                view.gameObject.SetActive(true);
-                view.UpdateView(pair.Value, pair.Key);
-                view.OnClicked.AddListener(OnHeroViewClicked);
-                view.SetSelected(_heroModel.SelectedHeroIdentifiers.Contains(pair.Key));
-                _heroViews.Add(view);
-            }
+                var id = pair.Key;
+                var heroDef = pair.Value;
 
-            for (int i = ownedHeroPairs.Count; i < _heroModel.TotalHeroCount; i++)
+                var presenter = Instantiate(heroPresenterTemplate, heroPresenterTemplate.transform.parent);
+                presenter.gameObject.SetActive(true);
+                presenter.onClicked.AddListener(OnHeroClicked);
+                var hero = new HeroModel(hc, heroDef, id, hc.GetLevel(id));
+                presenter.Present(hero);
+                presenter.HeroView.SetSelected(_heroConfiguration.selectedHeroIdentifiers.Contains(pair.Key));
+                _heroPresenters.Add(presenter);
+            }
+        }
+
+        private void PopulateNotOwnedHeroViews()
+        {
+            for (int i = _heroPresenters.Count; i < _heroConfiguration.TotalHeroCount; i++)
             {
                 var view = Instantiate(notOwnedHeroViewTemplate, notOwnedHeroViewTemplate.transform.parent);
                 view.gameObject.SetActive(true);
                 view.onClick.AddListener(OnNotOwnedHeroViewClicked);
                 _notOwnedHeroViews.Add(view);
             }
-            
-            battleButton.onClick.AddListener(OnBattleClicked);
         }
 
         private void OnDestroy()
         {
-            foreach (var view in _heroViews)
+            foreach (var presenter in _heroPresenters)
             {
-                view.OnClicked.RemoveListener(OnHeroViewClicked);
+                presenter.onClicked.RemoveListener(OnHeroClicked);
             }
             
             foreach (var view in _notOwnedHeroViews)
@@ -64,22 +80,22 @@ namespace HeroFighter.Runtime.Presenters
             battleButton.onClick.RemoveListener(OnBattleClicked);
         }
 
-        private void OnHeroViewClicked(HeroView heroView, string heroIdentifier)
+        private void OnHeroClicked(HeroPresenter presenter)
         {
-            if (_heroModel.SelectedHeroIdentifiers.Remove(heroIdentifier))
+            if (_heroConfiguration.selectedHeroIdentifiers.Remove(presenter.HeroModel.Identifier))
             {
-                heroView.SetSelected(false);
+                presenter.HeroView.SetSelected(false);
                 return;
             }
 
-            if (_heroModel.SelectedHeroIdentifiers.Count == Constants.MaxSelectableHeroCount)
+            if (_heroConfiguration.selectedHeroIdentifiers.Count == Constants.MaxSelectableHeroCount)
             {
                 //TODO toast this here
                 return;
             }
             
-            _heroModel.SelectedHeroIdentifiers.Add(heroIdentifier);
-            heroView.SetSelected(true);
+            _heroConfiguration.selectedHeroIdentifiers.Add(presenter.HeroModel.Identifier);
+            presenter.HeroView.SetSelected(true);
         }
         
         private void OnNotOwnedHeroViewClicked()
@@ -89,13 +105,13 @@ namespace HeroFighter.Runtime.Presenters
         
         private void OnBattleClicked()
         {
-            if (_heroModel.SelectedHeroIdentifiers.Count != Constants.MaxSelectableHeroCount)
+            if (_heroConfiguration.selectedHeroIdentifiers.Count != Constants.MaxSelectableHeroCount)
             {
                 //TODO toast this here
                 return;
             }
 
-            _heroModel.SaveSelectedHeroes();
+            _heroConfiguration.SaveSelectedHeroes(); //Not necessary though convenient for the player
             SceneManager.LoadScene(GameContext.Instance.battleSceneIndex);
         }
     }

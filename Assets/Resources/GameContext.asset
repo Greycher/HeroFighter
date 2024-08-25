@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5d9effb84545ae43a56d549c8aa960e, type: 3}
   m_Name: GameContext
   m_EditorClassIdentifier: 
-  heroModel: {fileID: 11400000, guid: e74f60c0340b2b3498c3c036dba9767d, type: 2}
+  heroConfiguration: {fileID: 11400000, guid: 0d7e521c315ce664bab395d01b2d6081, type: 2}
+  heroSelectionSceneIndex: 0
+  battleSceneIndex: 1

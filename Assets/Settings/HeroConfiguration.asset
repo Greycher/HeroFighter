@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc33bbbd7bca45c39cf88de8fbb76aef, type: 3}
-  m_Name: HeroModel
+  m_Name: HeroConfiguration
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -21,9 +21,9 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: heroCollection
+    - Name: heroDefinitionCollection
       Entry: 7
-      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[HeroFighter.Runtime.Hero,
+      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[HeroFighter.Runtime.HeroDefinition,
         HeroFighter.Runtime]], mscorlib
     - Name: comparer
       Entry: 7
@@ -43,13 +43,13 @@ MonoBehaviour:
       Data: hero_a
     - Name: $v
       Entry: 7
-      Data: 2|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+      Data: 2|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
     - Name: name
       Entry: 1
       Data: Hero A
     - Name: attackPower
-      Entry: 4
-      Data: 1
+      Entry: 3
+      Data: 10
     - Name: initialHero
       Entry: 5
       Data: true
@@ -67,13 +67,13 @@ MonoBehaviour:
       Data: hero_b
     - Name: $v
       Entry: 7
-      Data: 3|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+      Data: 3|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
     - Name: name
       Entry: 1
       Data: Hero B
     - Name: attackPower
-      Entry: 4
-      Data: 1
+      Entry: 3
+      Data: 10
     - Name: initialHero
       Entry: 5
       Data: true
@@ -91,13 +91,13 @@ MonoBehaviour:
       Data: hero_c
     - Name: $v
       Entry: 7
-      Data: 4|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+      Data: 4|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
     - Name: name
       Entry: 1
       Data: Hero C
     - Name: attackPower
-      Entry: 4
-      Data: 1
+      Entry: 3
+      Data: 10
     - Name: initialHero
       Entry: 5
       Data: true
@@ -115,13 +115,13 @@ MonoBehaviour:
       Data: hero_d
     - Name: $v
       Entry: 7
-      Data: 5|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+      Data: 5|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
     - Name: name
       Entry: 1
       Data: Hero D
     - Name: attackPower
-      Entry: 4
-      Data: 2
+      Entry: 3
+      Data: 10
     - Name: initialHero
       Entry: 5
       Data: false
@@ -139,13 +139,13 @@ MonoBehaviour:
       Data: hero_e
     - Name: $v
       Entry: 7
-      Data: 6|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+      Data: 6|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
     - Name: name
       Entry: 1
       Data: Hero E
     - Name: attackPower
-      Entry: 4
-      Data: 2
+      Entry: 3
+      Data: 20
     - Name: initialHero
       Entry: 5
       Data: false
@@ -163,16 +163,16 @@ MonoBehaviour:
       Data: hero_f
     - Name: $v
       Entry: 7
-      Data: 7|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+      Data: 7|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
     - Name: name
       Entry: 1
       Data: Hero F
     - Name: attackPower
-      Entry: 4
-      Data: 2
+      Entry: 3
+      Data: 20
     - Name: initialHero
       Entry: 5
-      Data: true
+      Data: false
     - Name: 
       Entry: 8
       Data: 
@@ -187,13 +187,13 @@ MonoBehaviour:
       Data: hero_g
     - Name: $v
       Entry: 7
-      Data: 8|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+      Data: 8|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
     - Name: name
       Entry: 1
       Data: Hero G
     - Name: attackPower
-      Entry: 4
-      Data: 2
+      Entry: 3
+      Data: 20
     - Name: initialHero
       Entry: 5
       Data: false
@@ -211,13 +211,13 @@ MonoBehaviour:
       Data: hero_h
     - Name: $v
       Entry: 7
-      Data: 9|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+      Data: 9|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
     - Name: name
       Entry: 1
       Data: Hero H
     - Name: attackPower
-      Entry: 4
-      Data: 3
+      Entry: 3
+      Data: 30
     - Name: initialHero
       Entry: 5
       Data: false
@@ -235,13 +235,13 @@ MonoBehaviour:
       Data: hero_i
     - Name: $v
       Entry: 7
-      Data: 10|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+      Data: 10|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
     - Name: name
       Entry: 1
       Data: Hero I
     - Name: attackPower
-      Entry: 4
-      Data: 3
+      Entry: 3
+      Data: 30
     - Name: initialHero
       Entry: 5
       Data: false
@@ -259,13 +259,13 @@ MonoBehaviour:
       Data: hero_j
     - Name: $v
       Entry: 7
-      Data: 11|HeroFighter.Runtime.Hero, HeroFighter.Runtime
+      Data: 11|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
     - Name: name
       Entry: 1
       Data: Hero J
     - Name: attackPower
-      Entry: 4
-      Data: 4
+      Entry: 3
+      Data: 40
     - Name: initialHero
       Entry: 5
       Data: false
@@ -281,3 +281,7 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+  baseHeroHealth: 100
+  experiencePerLevel: 5
+  healthIncreasePerLevel: 0.1
+  attackPowerIncreasePerLevel: 0.1

@@ -4,10 +4,10 @@ using UnityEngine;
 namespace HeroFighter.Runtime
 {
     [Serializable]
-    public class Hero
-    {
+    public class HeroDefinition
+    { 
         public string name;
-        public float attackPower;
+        public int attackPower;
         [Tooltip("Check if hero should be contained in player's initial collection.")]
         public bool initialHero;
     }

@@ -1,6 +1,7 @@
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -13,7 +14,7 @@ namespace HeroFighter.Runtime
     {
         private const string FileName = nameof(GameContext);
 
-        public HeroModel heroModel;
+        [FormerlySerializedAs("heroModel")] public HeroConfiguration heroConfiguration;
         public int heroSelectionSceneIndex = 0;
         public int battleSceneIndex = 1;
 
@@ -37,7 +38,7 @@ namespace HeroFighter.Runtime
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialize()
         {
-            Instance.heroModel.Initialize();
+            Instance.heroConfiguration.Initialize();
         }
 
         private static GameContext Load()

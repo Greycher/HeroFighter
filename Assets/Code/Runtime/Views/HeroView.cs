@@ -13,29 +13,19 @@ namespace HeroFighter.Runtime.Views
         [SerializeField] private Animator animator;
         [SerializeField, AnimatorState] private int defaultAnimState;
         [SerializeField, AnimatorState] private int selectedAnimState;
+        [SerializeField, AnimatorState] private int attackAnimState;
         
-        public UnityEvent<HeroView, string> OnClicked = new();
-        private string _heroIdentifier;
+        public UnityEvent OnClicked => button.onClick;
 
-        private void OnEnable()
+        public bool Interactable
         {
-            button.onClick.AddListener(OnBtnClicked);
+            get => button.interactable;
+            set => button.interactable = value;
         }
 
-        private void OnDisable()
+        public void UpdateView(char c)
         {
-            button.onClick.RemoveListener(OnBtnClicked);
-        }
-
-        private void OnBtnClicked()
-        {
-            OnClicked.Invoke(this, _heroIdentifier);
-        }
-
-        public void UpdateView(Hero hero, string heroIdentifier)
-        {
-            _heroIdentifier = heroIdentifier;
-            label.text = hero.name[^1].ToString();
+            label.text = c.ToString();
         }
 
         public void SetSelected(bool selected)
@@ -43,6 +33,11 @@ namespace HeroFighter.Runtime.Views
             animator.Play(selected ? selectedAnimState : defaultAnimState);
         }
 
+        public void OnAttack()
+        {
+            animator.Play(attackAnimState, 0, 0);
+        }
+        
         private void OnDestroy()
         {
             OnClicked.RemoveAllListeners();
