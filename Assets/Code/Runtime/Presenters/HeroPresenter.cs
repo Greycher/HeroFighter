@@ -110,7 +110,7 @@ namespace HeroFighter.Runtime.Presenters
             var def = HeroModel.heroDefinition;
             var xpLimit = _heroConfiguration.experiencePerLevel;
             var xp = _heroConfiguration.GetExperience(HeroModel.Identifier) % xpLimit;
-            view.UpdateView(screenPos, def.name, HeroModel.Level, def.attackPower, xp, xpLimit);
+            view.UpdateView(screenPos, def.name, HeroModel.Level + 1, HeroModel.AttackPower, xp, xpLimit);
         }
 
         private void OnInfoPopupCloseClicked(HeroInfoPopupView view)

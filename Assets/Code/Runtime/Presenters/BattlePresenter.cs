@@ -26,12 +26,13 @@ namespace HeroFighter.Runtime.Presenters
         [SerializeField] private float delayBeforeTurnStarts = 0.7f;
         [SerializeField] private float delayBeforeEnemyAttack = 2f;
 
-        private readonly List<HeroModel> _alivePlayerHeroes = new();
         private bool _playersTurn;
         private bool _battling;
         private bool _turnPlayed = true;
 
         public UnityEvent<bool> onBattleEnd = new();
+
+        public List<HeroModel> AlivePlayerHeroes { get; } = new();
 
         private void Awake()
         {
@@ -58,7 +59,7 @@ namespace HeroFighter.Runtime.Presenters
             if (!_playersTurn)
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(delayBeforeEnemyAttack));
-                var randomHero = _alivePlayerHeroes[Random.Range(0, _alivePlayerHeroes.Count)];
+                var randomHero = AlivePlayerHeroes[Random.Range(0, AlivePlayerHeroes.Count)];
                 enemyHeroPresenter.Attack(randomHero);
                 EndTurn();
             }
@@ -68,7 +69,7 @@ namespace HeroFighter.Runtime.Presenters
         {
             _turnPlayed = true;
 
-            if (_alivePlayerHeroes.Count == 0)
+            if (AlivePlayerHeroes.Count == 0)
             {
                 EndBattle(false);
             }
@@ -106,7 +107,7 @@ namespace HeroFighter.Runtime.Presenters
                 var healthPresenter = Instantiate(healthPresenterPrefab, presenter.transform);
                 healthPresenter.Present(hero.healthModel);
                 
-                _alivePlayerHeroes.Add(hero);
+                AlivePlayerHeroes.Add(hero);
             }
         }
 
@@ -138,7 +139,7 @@ namespace HeroFighter.Runtime.Presenters
         {
             UnSubscribeHeroPresenterEvents(presenter);
             presenter.HeroView.Interactable = false;
-            var removed = _alivePlayerHeroes.Remove(presenter.HeroModel);
+            var removed = AlivePlayerHeroes.Remove(presenter.HeroModel);
             Assert.IsTrue(removed);
         }
 

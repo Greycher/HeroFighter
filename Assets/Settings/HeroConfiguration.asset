@@ -289,3 +289,4 @@ MonoBehaviour:
   attackPowerIncreasePerLevel: 0.1
   heroInfoInputHoldDuration: 3
   cancelHoldInputOnDragOutside: 1
+  experienceIncreasePerWin: 1

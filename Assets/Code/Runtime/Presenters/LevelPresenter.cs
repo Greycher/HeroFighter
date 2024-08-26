@@ -32,6 +32,12 @@ namespace HeroFighter.Runtime.Presenters
             await UniTask.Delay(TimeSpan.FromSeconds(levelEndMenuOpenDelay));
             if (playerWin)
             {
+                var hc = GameContext.Instance.heroConfiguration;
+                foreach (var hero in battlePresenter.AlivePlayerHeroes)
+                {
+                    var id = hero.Identifier;
+                    hc.SetExperience(id, hc.GetExperience(id) + hc.experienceIncreasePerWin);
+                }
                 levelSuccessMenuView.gameObject.SetActive(true);
             }
             else

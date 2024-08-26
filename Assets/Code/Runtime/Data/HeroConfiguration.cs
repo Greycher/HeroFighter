@@ -23,6 +23,7 @@ namespace HeroFighter.Runtime
         public float heroInfoInputHoldDuration = 3f;
         [Tooltip("If true, drag input will not be executed in the case of player dragging out of hero's rect.")]
         public bool cancelHoldInputOnDragOutside;
+        public int experienceIncreasePerWin = 1;
         
         [NonSerialized] public readonly List<string> selectedHeroIdentifiers = new(Constants.MaxSelectableHeroCount);
 
