@@ -9,7 +9,6 @@ namespace HeroFighter.Runtime.Views
 {
     public class HeroInfoPopupView : MonoBehaviour
     {
-        [SerializeField] private Canvas canvas;
         [SerializeField] private RectTransform pivotTransform;
         [SerializeField] private TMP_Text heroNameLabel;
         [SerializeField] private string heroNameLabelFormat = "Name: {0}";
@@ -25,7 +24,7 @@ namespace HeroFighter.Runtime.Views
         
         public void UpdateView(Vector2 screenPos, string heroName, int level, int attackPower, int experience, int experienceLimit)
         {
-            pivotTransform.anchoredPosition = screenPos / canvas.scaleFactor;
+            pivotTransform.anchoredPosition = screenPos;
             heroNameLabel.text = String.Format(heroNameLabelFormat, heroName);
             levelLabel.text = String.Format(levelLabelFormat, level);
             attackPowerLabel.text = String.Format(attackPowerLabelFormat, attackPower);

@@ -17,6 +17,7 @@ namespace HeroFighter.Runtime.Presenters
         [FormerlySerializedAs("enemyHeroView")] [SerializeField] private HeroPresenter enemyHeroPresenter;
         [SerializeField] private HealthPresenter healthPresenterPrefab;
         [SerializeField] private TurnIndicatorView turnIndicatorView;
+        [SerializeField] private DamageNumberPresenter damageNumberPresenter;
         [Tooltip("Let's say this value is -2 and the summary of the player's hero level is 7, " +
                  "enemy hero level will be minimum 5(7-2)")]
         [SerializeField] private int minEnemyHeroLevelDiff = -2;
@@ -32,7 +33,7 @@ namespace HeroFighter.Runtime.Presenters
 
         public UnityEvent<bool> onBattleEnd = new();
 
-        public List<HeroModel> AlivePlayerHeroes { get; } = new();
+        public List<HeroPresenter> AlivePlayerHeroes { get; } = new();
 
         private void Awake()
         {
@@ -99,7 +100,7 @@ namespace HeroFighter.Runtime.Presenters
                 var heroDef = hc.heroDefinitionCollection[id];
                 var hero = new HeroModel(hc, heroDef, id, hc.GetLevel(id));
                 var presenter = heroPresenters[i];
-                presenter.Present(hero);
+                presenter.Present(hero, damageNumberPresenter);
                 presenter.onClicked.AddListener(OnPlayerHeroClicked);
                 presenter.onDied.AddListener(OnHeroDied);
 
@@ -107,7 +108,7 @@ namespace HeroFighter.Runtime.Presenters
                 var healthPresenter = Instantiate(healthPresenterPrefab, presenter.transform);
                 healthPresenter.Present(hero.healthModel);
                 
-                AlivePlayerHeroes.Add(hero);
+                AlivePlayerHeroes.Add(presenter);
             }
         }
 
@@ -131,7 +132,7 @@ namespace HeroFighter.Runtime.Presenters
                 return;
             }
 
-            presenter.Attack(enemyHeroPresenter.HeroModel);
+            presenter.Attack(enemyHeroPresenter);
             EndTurn();
         }
         
@@ -139,7 +140,7 @@ namespace HeroFighter.Runtime.Presenters
         {
             UnSubscribeHeroPresenterEvents(presenter);
             presenter.HeroView.Interactable = false;
-            var removed = AlivePlayerHeroes.Remove(presenter.HeroModel);
+            var removed = AlivePlayerHeroes.Remove(presenter);
             Assert.IsTrue(removed);
         }
 
@@ -160,7 +161,7 @@ namespace HeroFighter.Runtime.Presenters
             var id = ids.ElementAt(Random.Range(0, ids.Count));
             var def = hc.heroDefinitionCollection[id];
             var hero = new HeroModel(hc, def, id, level);
-            enemyHeroPresenter.Present(hero);
+            enemyHeroPresenter.Present(hero, damageNumberPresenter);
             
             var healthPresenter = Instantiate(healthPresenterPrefab, enemyHeroPresenter.transform);
             healthPresenter.Present(hero.healthModel);

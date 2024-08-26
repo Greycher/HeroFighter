@@ -290,3 +290,4 @@ MonoBehaviour:
   heroInfoInputHoldDuration: 3
   cancelHoldInputOnDragOutside: 1
   experienceIncreasePerWin: 1
+  getNewHeroEveryXLevel: 5

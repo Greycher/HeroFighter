@@ -49,9 +49,10 @@ namespace HeroFighter.Runtime
             return Mathf.FloorToInt(ap + ap * _heroConfiguration.attackPowerIncreasePerLevel * level);
         }
 
-        public void Damage(HeroModel model)
+        public int Damage(HeroModel model)
         {
             model.TakeDamage(AttackPower);
+            return AttackPower;
         }
 
         private void TakeDamage(int attackPower)

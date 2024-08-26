@@ -24,6 +24,7 @@ namespace HeroFighter.Runtime
         [Tooltip("If true, drag input will not be executed in the case of player dragging out of hero's rect.")]
         public bool cancelHoldInputOnDragOutside;
         public int experienceIncreasePerWin = 1;
+        public int getNewHeroEveryXLevel = 1;
         
         [NonSerialized] public readonly List<string> selectedHeroIdentifiers = new(Constants.MaxSelectableHeroCount);
 
@@ -58,7 +59,7 @@ namespace HeroFighter.Runtime
             var heroes = new List<KeyValuePair<string, HeroDefinition>>();
             foreach (var pair in heroDefinitionCollection)
             {
-                if (GetIsHeroOwned(pair.Key))
+                if (GetHeroOwned(pair.Key))
                 {
                     heroes.Add(pair);
                 }
@@ -66,8 +67,22 @@ namespace HeroFighter.Runtime
 
             return heroes;
         }
+        
+        public List<string> GetUnOwnedHeroIdentifiers()
+        {
+            var heroes = new List<string>();
+            foreach (var pair in heroDefinitionCollection)
+            {
+                if (!GetHeroOwned(pair.Key))
+                {
+                    heroes.Add(pair.Key);
+                }
+            }
 
-        public bool GetIsHeroOwned(string key)
+            return heroes;
+        }
+
+        public bool GetHeroOwned(string key)
         {
             Assert.IsTrue(heroDefinitionCollection.ContainsKey(key));
 
@@ -76,16 +91,16 @@ namespace HeroFighter.Runtime
                 return true;
             }
 
-            return PlayerPrefs.GetInt(GetIsHeroOwnedPrefKey(key), 0) == 1;
+            return PlayerPrefs.GetInt(GetHeroOwnedPrefKey(key), 0) == 1;
         }
         
         public void SetHeroOwned(string key)
         {
             Assert.IsTrue(heroDefinitionCollection.ContainsKey(key));
-            PlayerPrefs.SetInt(GetIsHeroOwnedPrefKey(key), 1);
+            PlayerPrefs.SetInt(GetHeroOwnedPrefKey(key), 1);
         }
 
-        private string GetIsHeroOwnedPrefKey(string key)
+        private string GetHeroOwnedPrefKey(string key)
         {
             return $"{key}{IsHeroOwnedPrefPostfix}";
         } 

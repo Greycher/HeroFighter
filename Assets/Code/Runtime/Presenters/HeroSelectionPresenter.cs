@@ -47,7 +47,7 @@ namespace HeroFighter.Runtime.Presenters
                 presenter.gameObject.SetActive(true);
                 presenter.onClicked.AddListener(OnHeroClicked);
                 var hero = new HeroModel(hc, heroDef, id, hc.GetLevel(id));
-                presenter.Present(hero);
+                presenter.Present(hero, null);
                 presenter.HeroView.SetSelected(_heroConfiguration.selectedHeroIdentifiers.Contains(pair.Key));
                 _heroPresenters.Add(presenter);
             }

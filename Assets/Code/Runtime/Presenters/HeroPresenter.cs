@@ -16,10 +16,12 @@ namespace HeroFighter.Runtime.Presenters
         private HeroModel _heroModel;
         private HeroConfiguration _heroConfiguration;
         private CancellationTokenSource _holdInputCancelTokenSource;
+        private DamageNumberPresenter _damageNumberPresenter;
 
         public UnityEvent<HeroPresenter> onClicked = new();
         public UnityEvent<HeroPresenter> onDied = new();
         private bool _onHoldInputDetected;
+        
         public HeroModel HeroModel => _heroModel;
         public HeroView HeroView => heroView;
 
@@ -28,9 +30,10 @@ namespace HeroFighter.Runtime.Presenters
             _heroConfiguration = GameContext.Instance.heroConfiguration;
         }
 
-        public void Present(HeroModel heroModel)
+        public void Present(HeroModel heroModel, DamageNumberPresenter damageNumberPresenter)
         {
             _heroModel = heroModel;
+            _damageNumberPresenter = damageNumberPresenter;
             heroModel.healthModel.LogHealth = logHealth;
             heroView.UpdateView(heroModel.heroDefinition.name);
             _heroModel?.onDied.RemoveListener(OnDied);
@@ -105,12 +108,10 @@ namespace HeroFighter.Runtime.Presenters
         {
             var view = Instantiate(_heroConfiguration.heroInfoPopupViewPrefab);
             view.OnCloseBtnClicked.AddListener(OnInfoPopupCloseClicked);
-            var pos = HeroView.transform.position;
-            var screenPos = RectTransformUtility.WorldToScreenPoint(Camera.main, pos);
             var def = HeroModel.heroDefinition;
             var xpLimit = _heroConfiguration.experiencePerLevel;
             var xp = _heroConfiguration.GetExperience(HeroModel.Identifier) % xpLimit;
-            view.UpdateView(screenPos, def.name, HeroModel.Level + 1, HeroModel.AttackPower, xp, xpLimit);
+            view.UpdateView(HeroView.ScreenPos, def.name, HeroModel.Level + 1, HeroModel.AttackPower, xp, xpLimit);
         }
 
         private void OnInfoPopupCloseClicked(HeroInfoPopupView view)
@@ -129,10 +130,14 @@ namespace HeroFighter.Runtime.Presenters
             onDied.Invoke(this);
         }
 
-        public void Attack(HeroModel randomHero)
+        public void Attack(HeroPresenter randomHero)
         {
-            HeroModel.Damage(randomHero);
+            var damage = HeroModel.Damage(randomHero.HeroModel);
             HeroView.OnAttack();
+            if (_damageNumberPresenter)
+            {
+                _damageNumberPresenter.Spawn(randomHero.HeroView.DamageNumberSpawnPoint, damage);
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using HeroFighter.Runtime.Views;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 namespace HeroFighter.Runtime.Presenters
 {
@@ -12,6 +13,8 @@ namespace HeroFighter.Runtime.Presenters
         [SerializeField] private LevelEndMenuView levelSuccessMenuView;
         [SerializeField] private LevelEndMenuView levelFailMenuView;
         [SerializeField] private float levelEndMenuOpenDelay = 1f;
+
+        private readonly LevelModel _levelModel = new();
 
         private void Start()
         {
@@ -29,15 +32,29 @@ namespace HeroFighter.Runtime.Presenters
 
         private async void OnBattleEnd(bool playerWin)
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(levelEndMenuOpenDelay));
+            var playCount = _levelModel.GetPlayCount() + 1;
+            _levelModel.SetPlayCount(playCount);
+
+            var hc = GameContext.Instance.heroConfiguration;
+            if (playCount % hc.getNewHeroEveryXLevel == 0)
+            {
+                var unOwnedHeroes = hc.GetUnOwnedHeroIdentifiers();
+                hc.SetHeroOwned(unOwnedHeroes[Random.Range(0, unOwnedHeroes.Count)]);
+            }
+            
             if (playerWin)
             {
-                var hc = GameContext.Instance.heroConfiguration;
                 foreach (var hero in battlePresenter.AlivePlayerHeroes)
                 {
-                    var id = hero.Identifier;
+                    var id = hero.HeroModel.Identifier;
                     hc.SetExperience(id, hc.GetExperience(id) + hc.experienceIncreasePerWin);
                 }
+            }
+            
+            await UniTask.Delay(TimeSpan.FromSeconds(levelEndMenuOpenDelay));
+            
+            if (playerWin)
+            {
                 levelSuccessMenuView.gameObject.SetActive(true);
             }
             else
