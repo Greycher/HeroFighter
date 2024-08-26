@@ -19,10 +19,11 @@ namespace HeroFighter.Runtime.Presenters
 
         public UnityEvent<HeroPresenter> onClicked = new();
         public UnityEvent<HeroPresenter> onDied = new();
+        private bool _onHoldInputDetected;
         public HeroModel HeroModel => _heroModel;
         public HeroView HeroView => heroView;
 
-        private void Start()
+        private void Awake()
         {
             _heroConfiguration = GameContext.Instance.heroConfiguration;
         }
@@ -39,6 +40,10 @@ namespace HeroFighter.Runtime.Presenters
         private void OnEnable()
         {
             heroView.onPointerDown.AddListener(OnPointerDown);
+            if (_heroConfiguration.cancelHoldInputOnDragOutside)
+            {
+                heroView.onPointerDrag.AddListener(OnPointerDrag);
+            }
             heroView.onPointerUp.AddListener(OnPointerUp);
             _heroModel?.onDied.RemoveListener(OnDied);
             _heroModel?.onDied.AddListener(OnDied);
@@ -48,20 +53,30 @@ namespace HeroFighter.Runtime.Presenters
         {
             _holdInputCancelTokenSource?.Cancel();
             heroView.onPointerDown.RemoveListener(OnPointerDown);
+            heroView.onPointerDrag.RemoveListener(OnPointerDrag);
             heroView.onPointerUp.RemoveListener(OnPointerUp);
             _heroModel?.onDied.RemoveListener(OnDied);
         }
         
         private void OnPointerDown(PointerEventData eventData)
         {
+            _onHoldInputDetected = false;
             _holdInputCancelTokenSource = new CancellationTokenSource();
             ExecuteHoldInputAfterDelayAsync(_heroConfiguration.heroInfoInputHoldDuration, _holdInputCancelTokenSource.Token);
+        }
+        
+        private void OnPointerDrag(PointerEventData arg0, bool arg1)
+        {
+            if (_heroConfiguration.cancelHoldInputOnDragOutside)
+            {
+                _holdInputCancelTokenSource.Cancel();
+            }
         }
 
         private void OnPointerUp(PointerEventData eventData, bool insideRect)
         {
             _holdInputCancelTokenSource.Cancel();
-            if (insideRect && Time.unscaledTime - eventData.clickTime < _heroConfiguration.heroInfoInputHoldDuration)
+            if (insideRect && !_onHoldInputDetected)
             {
                 OnClick();
             }
@@ -82,6 +97,7 @@ namespace HeroFighter.Runtime.Presenters
         
         private void OnHold()
         {
+            _onHoldInputDetected = true;
             SpawnInfoPopup();
         }
 
@@ -91,7 +107,6 @@ namespace HeroFighter.Runtime.Presenters
             view.OnCloseBtnClicked.AddListener(OnInfoPopupCloseClicked);
             var pos = HeroView.transform.position;
             var screenPos = RectTransformUtility.WorldToScreenPoint(Camera.main, pos);
-            // var screenPos = Camera.main.WorldToScreenPoint(pos);
             var def = HeroModel.heroDefinition;
             var xpLimit = _heroConfiguration.experiencePerLevel;
             var xp = _heroConfiguration.GetExperience(HeroModel.Identifier) % xpLimit;

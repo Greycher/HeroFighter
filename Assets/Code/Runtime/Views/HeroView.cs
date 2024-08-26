@@ -17,6 +17,7 @@ namespace HeroFighter.Runtime.Views
         private RectTransform _rectTransform;
         
         public UnityEvent<PointerEventData> onPointerDown = new();
+        public UnityEvent<PointerEventData, bool> onPointerDrag = new();
         public UnityEvent<PointerEventData, bool> onPointerUp = new();
 
         private RectTransform RectTransform
@@ -51,8 +52,13 @@ namespace HeroFighter.Runtime.Views
         {
             onPointerDown.Invoke(eventData);
         }
-        
-        protected override void OnSinglePointerDrag(PointerEventData eventData) {}
+
+        protected override void OnSinglePointerDrag(PointerEventData eventData)
+        {
+            var inside = RectTransformUtility.RectangleContainsScreenPoint(RectTransform, eventData.position,
+                eventData.pressEventCamera);
+            onPointerDrag.Invoke(eventData, inside);
+        }
         
         protected override void OnSinglePointerUp(PointerEventData eventData)
         {

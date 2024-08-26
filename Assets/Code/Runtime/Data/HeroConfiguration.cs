@@ -21,6 +21,8 @@ namespace HeroFighter.Runtime
         public float healthIncreasePerLevel = 0.1f;
         public float attackPowerIncreasePerLevel = 0.1f;
         public float heroInfoInputHoldDuration = 3f;
+        [Tooltip("If true, drag input will not be executed in the case of player dragging out of hero's rect.")]
+        public bool cancelHoldInputOnDragOutside;
         
         [NonSerialized] public readonly List<string> selectedHeroIdentifiers = new(Constants.MaxSelectableHeroCount);
 

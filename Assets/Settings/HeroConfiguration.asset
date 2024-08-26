@@ -288,3 +288,4 @@ MonoBehaviour:
   healthIncreasePerLevel: 0.1
   attackPowerIncreasePerLevel: 0.1
   heroInfoInputHoldDuration: 3
+  cancelHoldInputOnDragOutside: 1
