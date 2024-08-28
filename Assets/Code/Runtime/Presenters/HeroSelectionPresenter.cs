@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using HeroFighter.Runtime.Views;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -8,19 +9,23 @@ namespace HeroFighter.Runtime.Presenters
     public class HeroSelectionPresenter : MonoBehaviour
     {
         [SerializeField] private HeroPresenter heroPresenterTemplate; 
+        [SerializeField] private HeroInfoPopupView heroInfoPopupView;
         [SerializeField] private Button notOwnedHeroViewTemplate;
         [SerializeField] private Button battleButton;
         
-        private HeroConfiguration _heroConfiguration;
         private readonly List<HeroPresenter> _heroPresenters = new List<HeroPresenter>();
         private readonly List<Button> _notOwnedHeroViews = new List<Button>();
+        
+        private HeroConfiguration _heroConfiguration;
         private ToastPresenter _toastPresenter;
+        private PlayerModel _playerModel;
 
         private void Awake()
         {
             heroPresenterTemplate.gameObject.SetActive(false);
             notOwnedHeroViewTemplate.gameObject.SetActive(false);
             _heroConfiguration = GameContext.Instance.heroConfiguration;
+            _playerModel = PlayerModel.Instance;
             _toastPresenter = ToastPresenter.Instance;
         }
 
@@ -39,18 +44,19 @@ namespace HeroFighter.Runtime.Presenters
 
         private void PopulateOwnedHeroPresenters(HeroConfiguration hc)
         {
-            var ownedHeroPairs = hc.GetOwnedHeroPairs();
-            foreach (var pair in ownedHeroPairs)
+            var heroIndices = _playerModel.GetOwnedHeroes();
+            foreach (var id in heroIndices)
             {
-                var id = pair.Key;
-                var heroDef = pair.Value;
-
                 var presenter = Instantiate(heroPresenterTemplate, heroPresenterTemplate.transform.parent);
                 presenter.gameObject.SetActive(true);
                 presenter.onClicked.AddListener(OnHeroClicked);
-                var hero = new HeroModel(hc, heroDef, id, hc.GetLevel(id));
-                presenter.Present(hero, null);
-                presenter.HeroView.SetSelected(_heroConfiguration.selectedHeroIdentifiers.Contains(pair.Key));
+                
+                var heroDef = _heroConfiguration.heroDefinitionCollection[id];
+                var hero = new HeroModel(hc, heroDef, id, _playerModel.GetLevel(id));
+                
+                presenter.Initialize(hero, heroInfoPopupView, null);
+                presenter.HeroView.SetSelected(_playerModel.SelectedHeroIdentifiers.Contains(id));
+                
                 _heroPresenters.Add(presenter);
             }
         }
@@ -62,6 +68,7 @@ namespace HeroFighter.Runtime.Presenters
                 var view = Instantiate(notOwnedHeroViewTemplate, notOwnedHeroViewTemplate.transform.parent);
                 view.gameObject.SetActive(true);
                 view.onClick.AddListener(OnNotOwnedHeroViewClicked);
+                
                 _notOwnedHeroViews.Add(view);
             }
         }
@@ -83,19 +90,19 @@ namespace HeroFighter.Runtime.Presenters
 
         private void OnHeroClicked(HeroPresenter presenter)
         {
-            if (_heroConfiguration.selectedHeroIdentifiers.Remove(presenter.HeroModel.Identifier))
+            if (_playerModel.SelectedHeroIdentifiers.Remove(presenter.HeroModel.Identifier))
             {
                 presenter.HeroView.SetSelected(false);
                 return;
             }
 
-            if (_heroConfiguration.selectedHeroIdentifiers.Count == Constants.MaxSelectableHeroCount)
+            if (_playerModel.SelectedHeroIdentifiers.Count == Constants.MaxSelectableHeroCount)
             {
-                _toastPresenter.ToastMessage($"You have reached equip limit!");
+                _toastPresenter.ToastMessage("You have reached equip limit!");
                 return;
             }
             
-            _heroConfiguration.selectedHeroIdentifiers.Add(presenter.HeroModel.Identifier);
+            _playerModel.SelectedHeroIdentifiers.Add(presenter.HeroModel.Identifier);
             presenter.HeroView.SetSelected(true);
         }
         
@@ -106,13 +113,13 @@ namespace HeroFighter.Runtime.Presenters
         
         private void OnBattleClicked()
         {
-            if (_heroConfiguration.selectedHeroIdentifiers.Count != Constants.MaxSelectableHeroCount)
+            if (_playerModel.SelectedHeroIdentifiers.Count != Constants.MaxSelectableHeroCount)
             {
                 _toastPresenter.ToastMessage($"You need to equip {Constants.MaxSelectableHeroCount} hero in order to battle!");
                 return;
             }
 
-            _heroConfiguration.SaveSelectedHeroes(); //Not necessary though convenient for the player
+            _playerModel.SaveSelectedHeroes(); //Not necessary though convenient for the player
             SceneManager.LoadScene(GameContext.Instance.sceneConfiguration.battleSceneIndex);
         }
     }

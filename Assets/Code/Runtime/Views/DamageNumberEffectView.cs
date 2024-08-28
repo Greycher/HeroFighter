@@ -25,7 +25,7 @@ namespace HeroFighter.Runtime.Views
             }
         }
 
-        public UnityEvent<DamageNumberEffectView> onFloatingAnimEnd = new();
+        public UnityEvent<DamageNumberEffectView> onAnimEnd = new();
         
         public void Play(int number)
         {
@@ -43,7 +43,7 @@ namespace HeroFighter.Runtime.Views
         {
             if (stateHash == floatingAnimState)
             {
-                onFloatingAnimEnd?.Invoke(this);
+                onAnimEnd?.Invoke(this);
             }
         }
     }

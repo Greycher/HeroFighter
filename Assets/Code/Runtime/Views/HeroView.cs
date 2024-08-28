@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -38,7 +37,7 @@ namespace HeroFighter.Runtime.Views
 
         public Vector2 ScreenPos => WorldToScreenPos(transform.position);
 
-        public Vector3 DamageNumberSpawnPoint => WorldToScreenPos(damageNumberSpawnPointTr.position);
+        public Vector2 DamageNumberSpawnPoint => WorldToScreenPos(damageNumberSpawnPointTr.position);
 
         private void Awake()
         {

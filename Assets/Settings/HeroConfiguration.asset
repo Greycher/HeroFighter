@@ -24,7 +24,7 @@ MonoBehaviour:
     - Name: heroDefinitionCollection
       Entry: 7
       Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[HeroFighter.Runtime.HeroDefinition,
-        HeroFighter.Runtime]], mscorlib
+        HeroFighter]], mscorlib
     - Name: comparer
       Entry: 7
       Data: 1|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
@@ -43,7 +43,7 @@ MonoBehaviour:
       Data: hero_a
     - Name: $v
       Entry: 7
-      Data: 2|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
+      Data: 2|HeroFighter.Runtime.HeroDefinition, HeroFighter
     - Name: name
       Entry: 1
       Data: A
@@ -67,7 +67,7 @@ MonoBehaviour:
       Data: hero_b
     - Name: $v
       Entry: 7
-      Data: 3|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
+      Data: 3|HeroFighter.Runtime.HeroDefinition, HeroFighter
     - Name: name
       Entry: 1
       Data: B
@@ -91,7 +91,7 @@ MonoBehaviour:
       Data: hero_c
     - Name: $v
       Entry: 7
-      Data: 4|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
+      Data: 4|HeroFighter.Runtime.HeroDefinition, HeroFighter
     - Name: name
       Entry: 1
       Data: C
@@ -115,7 +115,7 @@ MonoBehaviour:
       Data: hero_d
     - Name: $v
       Entry: 7
-      Data: 5|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
+      Data: 5|HeroFighter.Runtime.HeroDefinition, HeroFighter
     - Name: name
       Entry: 1
       Data: D
@@ -139,7 +139,7 @@ MonoBehaviour:
       Data: hero_e
     - Name: $v
       Entry: 7
-      Data: 6|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
+      Data: 6|HeroFighter.Runtime.HeroDefinition, HeroFighter
     - Name: name
       Entry: 1
       Data: E
@@ -163,7 +163,7 @@ MonoBehaviour:
       Data: hero_f
     - Name: $v
       Entry: 7
-      Data: 7|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
+      Data: 7|HeroFighter.Runtime.HeroDefinition, HeroFighter
     - Name: name
       Entry: 1
       Data: F
@@ -187,7 +187,7 @@ MonoBehaviour:
       Data: hero_g
     - Name: $v
       Entry: 7
-      Data: 8|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
+      Data: 8|HeroFighter.Runtime.HeroDefinition, HeroFighter
     - Name: name
       Entry: 1
       Data: G
@@ -211,7 +211,7 @@ MonoBehaviour:
       Data: hero_h
     - Name: $v
       Entry: 7
-      Data: 9|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
+      Data: 9|HeroFighter.Runtime.HeroDefinition, HeroFighter
     - Name: name
       Entry: 1
       Data: H
@@ -235,7 +235,7 @@ MonoBehaviour:
       Data: hero_i
     - Name: $v
       Entry: 7
-      Data: 10|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
+      Data: 10|HeroFighter.Runtime.HeroDefinition, HeroFighter
     - Name: name
       Entry: 1
       Data: I
@@ -259,7 +259,7 @@ MonoBehaviour:
       Data: hero_j
     - Name: $v
       Entry: 7
-      Data: 11|HeroFighter.Runtime.HeroDefinition, HeroFighter.Runtime
+      Data: 11|HeroFighter.Runtime.HeroDefinition, HeroFighter
     - Name: name
       Entry: 1
       Data: J
@@ -287,7 +287,7 @@ MonoBehaviour:
   experiencePerLevel: 5
   healthIncreasePerLevel: 0.1
   attackPowerIncreasePerLevel: 0.1
-  heroInfoInputHoldDuration: 0.5
+  heroInfoInputHoldDuration: 3
   cancelHoldInputOnDragOutside: 1
   experienceIncreasePerWin: 1
   unlockNewHeroEveryXLevel: 5

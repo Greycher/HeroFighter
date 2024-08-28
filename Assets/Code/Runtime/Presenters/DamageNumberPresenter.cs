@@ -31,7 +31,7 @@ namespace HeroFighter.Runtime.Presenters
         private void ActionOnGet(DamageNumberEffectView effectView)
         {
             effectView.gameObject.SetActive(true);
-            effectView.onFloatingAnimEnd.AddListener(OnAnimEnd);
+            effectView.onAnimEnd.AddListener(OnAnimEnd);
         }
 
         private void OnAnimEnd(DamageNumberEffectView effectView)
@@ -42,7 +42,7 @@ namespace HeroFighter.Runtime.Presenters
         private void ActionOnRelease(DamageNumberEffectView effectView)
         {
             effectView.gameObject.SetActive(false);
-            effectView.onFloatingAnimEnd.RemoveListener(OnAnimEnd);
+            effectView.onAnimEnd.RemoveListener(OnAnimEnd);
         }
     }
 }

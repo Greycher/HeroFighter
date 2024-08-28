@@ -10,7 +10,7 @@ namespace HeroFighter.Editor
     public abstract class BaseAnimatorElementAttributeDrawer : PropertyDrawer
     {
         protected const string EmptyOptionString = "None";
-        protected AnimatorController _animatorController;
+        private AnimatorController _animatorController;
 
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)

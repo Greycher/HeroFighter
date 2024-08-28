@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace HeroFighter.Runtime.Other
+namespace HeroFighter.Runtime
 {
     public class AnimationEndBroadcaster : StateMachineBehaviour
     {

@@ -12,7 +12,7 @@ namespace HeroFighter.Runtime.Presenters
         [SerializeField] private ToastView toastViewTemplate;
         
         private ObjectPool<ToastView> _toastPool;
-        private HashSet<int> _messageHashSet = new();
+        private readonly HashSet<int> _messageHashSet = new();
 
         protected override void Awake()
         {
@@ -36,7 +36,7 @@ namespace HeroFighter.Runtime.Presenters
         
         private ToastView CreateFunc()
         {
-            return Instantiate(toastViewTemplate, transform);
+            return Instantiate(toastViewTemplate, toastViewTemplate.transform.parent);
         }
         
         private void ActionOnGet(ToastView view)
@@ -49,12 +49,12 @@ namespace HeroFighter.Runtime.Presenters
         {
             view.gameObject.SetActive(false);
             view.onAnimationEnd.RemoveListener(OnAnimEnd);
-            var removed = _messageHashSet.Remove(view.Message.GetHashCode());
-            Assert.IsTrue(removed);
         }
         
         private void OnAnimEnd(ToastView effectView)
         {
+            var removed = _messageHashSet.Remove(effectView.Message.GetHashCode());
+            Assert.IsTrue(removed);
             _toastPool.Release(effectView);
         }
     }

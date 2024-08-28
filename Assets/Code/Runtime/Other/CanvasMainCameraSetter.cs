@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-namespace HeroFighter.Runtime.Other
+namespace HeroFighter.Runtime
 {
     [RequireComponent(typeof(Canvas))]
     public class CanvasMainCameraSetter : MonoBehaviour

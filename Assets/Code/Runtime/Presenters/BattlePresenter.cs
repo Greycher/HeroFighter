@@ -6,7 +6,6 @@ using HeroFighter.Runtime.Views;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace HeroFighter.Runtime.Presenters
@@ -14,11 +13,12 @@ namespace HeroFighter.Runtime.Presenters
     public class BattlePresenter : MonoBehaviour
     {
         [SerializeField] private HeroPresenter[] heroPresenters;
-        [FormerlySerializedAs("enemyHeroView")] [SerializeField] private HeroPresenter enemyHeroPresenter;
+        [SerializeField] private HeroPresenter enemyHeroPresenter;
         [SerializeField] private HealthPresenter healthPresenterPrefab;
         [SerializeField] private TurnIndicatorView turnIndicatorView;
+        [SerializeField] private HeroInfoPopupView heroInfoPopupView;
         [SerializeField] private DamageNumberPresenter damageNumberPresenter;
-        [Tooltip("Let's say this value is -2 and the summary of the player's hero level is 7, " +
+        [Tooltip("Let's say this value is -2 and the sum of the player's hero level is 7, " +
                  "enemy hero level will be minimum 5(7-2)")]
         [SerializeField] private int minEnemyHeroLevelDiff = -2;
         [Tooltip("Let's say this value is +2 and the summary of the player's hero level is 7, " +
@@ -40,7 +40,6 @@ namespace HeroFighter.Runtime.Presenters
         {
             Assert.AreEqual(heroPresenters.Length, Constants.MaxSelectableHeroCount);
             _toastPresenter = ToastPresenter.Instance;
-
             var hc = GameContext.Instance.heroConfiguration;
             PreparePlayerHeroes(hc);
             var totalLvl = CalculateTotalPlayerHeroLevel();
@@ -58,11 +57,27 @@ namespace HeroFighter.Runtime.Presenters
         private async void StartTurnAsync()
         {
             turnIndicatorView.OnTurnStarted(_playersTurn);
-            await UniTask.Delay(TimeSpan.FromSeconds(delayBeforeTurnStarts));
+            
+            var cancelToken = this.GetCancellationTokenOnDestroy();
+            await UniTask.Delay(TimeSpan.FromSeconds(delayBeforeTurnStarts), 
+                cancellationToken: cancelToken).SuppressCancellationThrow();
+
+            if (cancelToken.IsCancellationRequested)
+            {
+                return;
+            }
+            
             _turnPlayed = false;
             if (!_playersTurn)
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(delayBeforeEnemyAttack));
+                await UniTask.Delay(TimeSpan.FromSeconds(delayBeforeEnemyAttack), 
+                    cancellationToken: cancelToken).SuppressCancellationThrow();
+                
+                if (cancelToken.IsCancellationRequested)
+                {
+                    return;
+                }
+                
                 var randomHero = AlivePlayerHeroes[Random.Range(0, AlivePlayerHeroes.Count)];
                 enemyHeroPresenter.Attack(randomHero);
                 EndTurn();
@@ -97,13 +112,14 @@ namespace HeroFighter.Runtime.Presenters
 
         private void PreparePlayerHeroes(HeroConfiguration hc)
         {
+            var playerModel = PlayerModel.Instance;
             for (int i = 0; i < Constants.MaxSelectableHeroCount; i++)
             {
-                var id = hc.selectedHeroIdentifiers[i];
+                var id = playerModel.SelectedHeroIdentifiers[i];
                 var heroDef = hc.heroDefinitionCollection[id];
-                var hero = new HeroModel(hc, heroDef, id, hc.GetLevel(id));
+                var hero = new HeroModel(hc, heroDef, id, playerModel.GetLevel(id));
                 var presenter = heroPresenters[i];
-                presenter.Present(hero, damageNumberPresenter);
+                presenter.Initialize(hero, heroInfoPopupView, damageNumberPresenter);
                 presenter.onClicked.AddListener(OnPlayerHeroClicked);
                 presenter.onDeath.AddListener(OnHeroDied);
 
@@ -162,7 +178,7 @@ namespace HeroFighter.Runtime.Presenters
             var id = ids.ElementAt(Random.Range(0, ids.Count));
             var def = hc.heroDefinitionCollection[id];
             var hero = new HeroModel(hc, def, id, level);
-            enemyHeroPresenter.Present(hero, damageNumberPresenter);
+            enemyHeroPresenter.Initialize(hero, heroInfoPopupView, damageNumberPresenter);
             
             var healthPresenter = Instantiate(healthPresenterPrefab, enemyHeroPresenter.transform);
             healthPresenter.Present(hero.HealthModel);

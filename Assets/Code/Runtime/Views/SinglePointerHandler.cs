@@ -6,12 +6,12 @@ namespace HeroFighter.Runtime.Views
 {
     public abstract class SinglePointerHandler : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
-        private const int c_nonPointer = int.MinValue;
-        private int _pointerId = c_nonPointer;
+        private const int NullPointerId = int.MinValue;
+        private int _pointerId = NullPointerId;
         
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (_pointerId != c_nonPointer) 
+            if (_pointerId != NullPointerId) 
             {
                 return;
             }
@@ -37,7 +37,7 @@ namespace HeroFighter.Runtime.Views
                 return;
             }
             
-            _pointerId = c_nonPointer;
+            _pointerId = NullPointerId;
             OnSinglePointerUp(eventData);
         }
 

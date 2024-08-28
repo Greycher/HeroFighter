@@ -5,10 +5,9 @@ namespace HeroFighter.Runtime
 {
     public class HeroModel
     {
+        private readonly HeroConfiguration _heroConfiguration;
         private readonly HeroDefinition _heroDefinition;
         private readonly HealthModel _healthModel;
-        
-        private readonly HeroConfiguration _heroConfiguration;
 
         public readonly UnityEvent onDied = new();
 

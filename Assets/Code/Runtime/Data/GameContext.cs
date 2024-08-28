@@ -1,7 +1,5 @@
 using System.IO;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -32,14 +30,6 @@ namespace HeroFighter.Runtime
             }
         }
         
-        //ScriptableObject Awake, OnEnable etc. was not reliable in older version of unity
-        //not sure if it is reliable in recent versions
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Initialize()
-        {
-            Instance.heroConfiguration.Initialize();
-        }
-
         private static GameContext Load()
         {
             var instance = Resources.Load<GameContext>(FileName);

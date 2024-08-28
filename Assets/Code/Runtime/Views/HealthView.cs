@@ -1,8 +1,8 @@
 using System;
-using System.Collections;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace HeroFighter.Runtime.Views
@@ -14,8 +14,8 @@ namespace HeroFighter.Runtime.Views
         [SerializeField] private float delay = 0.5f;
         [Tooltip("Sometimes health is near zero and it seems like hero is alive with zero health. This parameter prevents that.")]
         [SerializeField] private float minValueUnlessZero = 0.1f;
-        [SerializeField] private float tick = 0.1f;
-        [SerializeField] private float smoothness = 1f;
+        [SerializeField] private float refreshRate = 1 / 30f;
+        [FormerlySerializedAs("smoothness")] [SerializeField] private float fillSpeed = 1f;
 
         private CancellationTokenSource _onDisableCancelTokenSource;
         private float _lastUpdateTime;
@@ -48,7 +48,8 @@ namespace HeroFighter.Runtime.Views
         {
             while (true)
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(tick), cancellationToken: token).SuppressCancellationThrow();
+                await UniTask.Delay(TimeSpan.FromSeconds(refreshRate), 
+                    cancellationToken: token).SuppressCancellationThrow();
                 
                 if (token.IsCancellationRequested)
                 {
@@ -60,7 +61,7 @@ namespace HeroFighter.Runtime.Views
                     _delayedTargetValue = _targetValue;
                 }
                 
-                var maxDelta = smoothness * tick;
+                var maxDelta = fillSpeed * refreshRate;
                 slider.value = Mathf.MoveTowards(slider.value, _targetValue, maxDelta);
                 delayedSlider.value = Mathf.MoveTowards(delayedSlider.value, _delayedTargetValue, maxDelta);
             }

@@ -20,7 +20,7 @@ namespace HeroFighter.Runtime.Views
         [SerializeField] private string experienceLabelFormat = "Experience: {0}/{1}";
         [SerializeField] private Button closeButton;
 
-        public UnityEvent<HeroInfoPopupView> OnCloseBtnClicked = new();
+        public UnityEvent<HeroInfoPopupView> onCloseBtnClicked = new();
         
         public void UpdateView(Vector2 screenPos, string heroName, int level, int attackPower, int experience, int experienceLimit)
         {
@@ -38,7 +38,7 @@ namespace HeroFighter.Runtime.Views
 
         private void OnCloseClicked()
         {
-            OnCloseBtnClicked.Invoke(this);
+            onCloseBtnClicked.Invoke(this);
         }
 
         private void OnDisable()
@@ -48,7 +48,7 @@ namespace HeroFighter.Runtime.Views
 
         private void OnDestroy()
         {
-            OnCloseBtnClicked.RemoveAllListeners();
+            onCloseBtnClicked.RemoveAllListeners();
         }
     }
 }

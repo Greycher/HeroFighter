@@ -2,10 +2,10 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using HeroFighter.Runtime.Views;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 
 namespace HeroFighter.Runtime.Presenters
 {
@@ -14,15 +14,16 @@ namespace HeroFighter.Runtime.Presenters
         [SerializeField] private HeroView heroView;
         [SerializeField] private bool logHealth;
         
-        private HeroModel _heroModel;
         private HeroConfiguration _heroConfiguration;
-        private CancellationTokenSource _holdInputCancelTokenSource;
+        private HeroModel _heroModel;
+        private HeroInfoPopupView _heroInfoPopupView;
         private DamageNumberPresenter _damageNumberPresenter;
+        private CancellationTokenSource _holdInputCancelTokenSource;
 
         public UnityEvent<HeroPresenter> onClicked = new();
         public UnityEvent<HeroPresenter> onDeath = new();
         private bool _onHoldInputDetected;
-        
+
         public HeroModel HeroModel => _heroModel;
         public HeroView HeroView => heroView;
 
@@ -31,14 +32,15 @@ namespace HeroFighter.Runtime.Presenters
             _heroConfiguration = GameContext.Instance.heroConfiguration;
         }
 
-        public void Present(HeroModel heroModel, DamageNumberPresenter damageNumberPresenter)
+        public void Initialize(HeroModel heroModel, HeroInfoPopupView heroInfoPopupView, [CanBeNull]DamageNumberPresenter damageNumberPresenter)
         {
             _heroModel = heroModel;
+            _heroInfoPopupView = heroInfoPopupView;
             _damageNumberPresenter = damageNumberPresenter;
             heroModel.HealthModel.LogHealth = logHealth;
             heroView.UpdateView(heroModel.HeroDefinition.name);
-            _heroModel?.onDied.RemoveListener(OnDeath);
-            _heroModel?.onDied.AddListener(OnDeath);
+            _heroModel.onDied.RemoveListener(OnDeath);
+            _heroModel.onDied.AddListener(OnDeath);
         }
 
         private void OnEnable()
@@ -61,7 +63,12 @@ namespace HeroFighter.Runtime.Presenters
             heroView.onPointerUp.RemoveListener(OnPointerUp);
             _heroModel?.onDied.RemoveListener(OnDeath);
         }
-        
+
+        private void OnDestroy()
+        {
+            _heroInfoPopupView.onCloseBtnClicked.RemoveListener(OnInfoPopupCloseClicked);
+        }
+
         private void OnPointerDown(PointerEventData eventData)
         {
             if (eventData.button is PointerEventData.InputButton.Right or PointerEventData.InputButton.Middle)
@@ -103,8 +110,8 @@ namespace HeroFighter.Runtime.Presenters
         
         private async void ExecuteHoldInputAfterDelayAsync(float delay, CancellationToken token)
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(delay), false, 
-                PlayerLoopTiming.Update, token).SuppressCancellationThrow();
+            await UniTask.Delay(TimeSpan.FromSeconds(delay), 
+                cancellationToken: token).SuppressCancellationThrow();
             
             if (token.IsCancellationRequested)
             {
@@ -122,18 +129,18 @@ namespace HeroFighter.Runtime.Presenters
 
         private void SpawnInfoPopup()
         {
-            var view = Instantiate(_heroConfiguration.heroInfoPopupViewPrefab);
-            view.OnCloseBtnClicked.AddListener(OnInfoPopupCloseClicked);
+            _heroInfoPopupView.onCloseBtnClicked.AddListener(OnInfoPopupCloseClicked);
             var def = HeroModel.HeroDefinition;
             var xpLimit = _heroConfiguration.experiencePerLevel;
-            var xp = _heroConfiguration.GetExperience(HeroModel.Identifier) % xpLimit;
-            view.UpdateView(HeroView.ScreenPos, def.name, HeroModel.Level + 1, HeroModel.AttackPower, xp, xpLimit);
+            var xp = PlayerModel.Instance.GetExperience(HeroModel.Identifier) % xpLimit;
+            _heroInfoPopupView.UpdateView(HeroView.ScreenPos, def.name, HeroModel.Level + 1, HeroModel.AttackPower, xp, xpLimit);
+            _heroInfoPopupView.gameObject.SetActive(true);
         }
 
         private void OnInfoPopupCloseClicked(HeroInfoPopupView view)
         {
-            view.OnCloseBtnClicked.RemoveListener(OnInfoPopupCloseClicked);
-            Destroy(view.gameObject);
+            view.onCloseBtnClicked.RemoveListener(OnInfoPopupCloseClicked);
+            view.gameObject.SetActive(false);
         }
 
         private void OnClick()
@@ -147,13 +154,13 @@ namespace HeroFighter.Runtime.Presenters
             onDeath.Invoke(this);
         }
 
-        public void Attack(HeroPresenter randomHero)
+        public void Attack(HeroPresenter heroPresenter)
         {
-            var damage = HeroModel.Damage(randomHero.HeroModel);
+            var damage = HeroModel.Damage(heroPresenter.HeroModel);
             HeroView.OnAttack();
             if (_damageNumberPresenter)
             {
-                _damageNumberPresenter.Spawn(randomHero.HeroView.DamageNumberSpawnPoint, damage);
+                _damageNumberPresenter.Spawn(heroPresenter.HeroView.DamageNumberSpawnPoint, damage);
             }
         }
     }

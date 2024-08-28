@@ -39,51 +39,72 @@ namespace HeroFighter.Runtime.Presenters
             var playCount = _levelModel.GetPlayCount() + 1;
             _levelModel.SetPlayCount(playCount);
 
+            var playerModel = PlayerModel.Instance;
             var hc = GameContext.Instance.heroConfiguration;
-            if (playCount % hc.unlockNewHeroEveryXLevel == 0)
+            if (playCount % hc.unlockNewHeroEveryXLevel == 0 
+                && TryUnlockNewHero(playerModel, hc, out var heroName))
             {
-                var unOwnedHeroes = hc.GetUnOwnedHeroIdentifiers();
-                if (unOwnedHeroes.Count > 0)
-                {
-                    var rndHeroId = unOwnedHeroes[Random.Range(0, unOwnedHeroes.Count)];
-                    hc.SetHeroOwned(rndHeroId);
-                    var heroName = hc.heroDefinitionCollection[rndHeroId].name;
-                    levelEndMenuView.EnableNewHeroView(heroName);
-                }
+                levelEndMenuView.EnableNewHeroView(heroName);
             }
             
             if (playerWin)
             {
                 foreach (var hero in battlePresenter.AlivePlayerHeroes)
                 {
-                    var beforeHeroModel = hero.HeroModel;
-                    beforeHeroModel.HealthModel.Reset();
-                    var id = beforeHeroModel.Identifier;
-                    var beforeXP = hc.GetExperience(id);
-                    var afterXP = beforeXP + hc.experienceIncreasePerWin;
-                    hc.SetExperience(id, afterXP);
-
-                    var def = hc.heroDefinitionCollection[id];
-                    var afterHeroModel = new HeroModel(hc, def, id, hc.GetLevel(id));
-
-                    var view = levelEndMenuView.GetHeroStatUpView(def.name);
-                    if (beforeHeroModel.Level != afterHeroModel.Level)
-                    {
-                        view.AddLevelIncrease(beforeHeroModel.Level + 1, afterHeroModel.Level + 1);
-                        view.AddHealthIncrease(beforeHeroModel.HealthModel.InitialHealth, afterHeroModel.HealthModel.InitialHealth);
-                        view.AddAttackPowerIncrease(beforeHeroModel.AttackPower, afterHeroModel.AttackPower);
-                    }
-                    else
-                    {
-                        view.AddExperienceIncrease(beforeXP % hc.experiencePerLevel, afterXP % hc.experiencePerLevel);
-                    }
+                    AddExperienceToHeroAndUpdateLevelEndUI(hero, playerModel, hc);
                 }
             }
-            
-            await UniTask.Delay(TimeSpan.FromSeconds(levelEndMenuOpenDelay));
+
+            var token = this.GetCancellationTokenOnDestroy();
+            await UniTask.Delay(TimeSpan.FromSeconds(levelEndMenuOpenDelay), 
+                cancellationToken: token).SuppressCancellationThrow();
+
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
             
             levelEndMenuView.gameObject.SetActive(true);
             levelEndMenuView.UpdateView(playerWin);
+        }
+        
+        private bool TryUnlockNewHero(PlayerModel playerModel, HeroConfiguration hc, out string heroName)
+        {
+            var unOwnedHeroes = playerModel.GetUnownedHeroes();
+            if (unOwnedHeroes.Count > 0)
+            {
+                var rndHeroId = unOwnedHeroes[Random.Range(0, unOwnedHeroes.Count)];
+                playerModel.SetHeroOwned(rndHeroId);
+                heroName = hc.heroDefinitionCollection[rndHeroId].name;
+                return true;
+            }
+
+            heroName = default;
+            return false;
+        }
+
+        private void AddExperienceToHeroAndUpdateLevelEndUI(HeroPresenter hero, PlayerModel playerModel, HeroConfiguration hc)
+        {
+            var beforeHeroModel = hero.HeroModel;
+            var id = beforeHeroModel.Identifier;
+            var beforeXP = playerModel.GetExperience(id);
+            var afterXP = beforeXP + hc.experienceIncreasePerWin;
+            playerModel.SetExperience(id, afterXP);
+
+            var def = hc.heroDefinitionCollection[id];
+            var afterHeroModel = new HeroModel(hc, def, id, playerModel.GetLevel(id));
+
+            var view = levelEndMenuView.GetHeroStatUpView(def.name);
+            if (beforeHeroModel.Level != afterHeroModel.Level)
+            {
+                view.AddLevelIncrease(beforeHeroModel.Level + 1, afterHeroModel.Level + 1);
+                view.AddHealthIncrease(beforeHeroModel.HealthModel.InitialHealth, afterHeroModel.HealthModel.InitialHealth);
+                view.AddAttackPowerIncrease(beforeHeroModel.AttackPower, afterHeroModel.AttackPower);
+            }
+            else
+            {
+                view.AddExperienceIncrease(beforeXP % hc.experiencePerLevel, afterXP % hc.experiencePerLevel);
+            }
         }
     }
 }

@@ -1,4 +1,3 @@
-using HeroFighter.Runtime.Other;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
