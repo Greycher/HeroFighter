@@ -43,12 +43,18 @@ namespace HeroFighter.Runtime
         
         private void GetSelectedHeroes()
         {
+            var ownedHeroes = GetOwnedHeroes();
+            Assert.IsTrue(ownedHeroes.Count >= Constants.MaxSelectableHeroCount);
             for (int i = 0; i < Constants.MaxSelectableHeroCount; i++)
             {
                 var id = GetSelectedHero(i);
                 if (!String.IsNullOrEmpty(id))
                 {
                     SelectedHeroIdentifiers.Add(id);
+                }
+                else
+                {
+                    SelectedHeroIdentifiers.Add(ownedHeroes[i]);
                 }
             }
         }
