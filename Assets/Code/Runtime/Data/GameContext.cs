@@ -14,9 +14,8 @@ namespace HeroFighter.Runtime
     {
         private const string FileName = nameof(GameContext);
 
-        [FormerlySerializedAs("heroModel")] public HeroConfiguration heroConfiguration;
-        public int heroSelectionSceneIndex = 0;
-        public int battleSceneIndex = 1;
+        public HeroConfiguration heroConfiguration;
+        public SceneConfiguration sceneConfiguration;
 
         private static GameContext _instance;
 

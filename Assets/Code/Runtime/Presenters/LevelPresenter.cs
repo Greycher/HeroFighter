@@ -27,7 +27,7 @@ namespace HeroFighter.Runtime.Presenters
 
         private void OnContinuePressed()
         {
-            SceneManager.LoadScene(GameContext.Instance.heroSelectionSceneIndex);
+            SceneManager.LoadScene(GameContext.Instance.sceneConfiguration.heroSelectionSceneIndex);
         }
 
         private async void OnBattleEnd(bool playerWin)
@@ -36,7 +36,7 @@ namespace HeroFighter.Runtime.Presenters
             _levelModel.SetPlayCount(playCount);
 
             var hc = GameContext.Instance.heroConfiguration;
-            if (playCount % hc.getNewHeroEveryXLevel == 0)
+            if (playCount % hc.unlockNewHeroEveryXLevel == 0)
             {
                 var unOwnedHeroes = hc.GetUnOwnedHeroIdentifiers();
                 hc.SetHeroOwned(unOwnedHeroes[Random.Range(0, unOwnedHeroes.Count)]);

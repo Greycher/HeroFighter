@@ -14,12 +14,14 @@ namespace HeroFighter.Runtime.Presenters
         private HeroConfiguration _heroConfiguration;
         private readonly List<HeroPresenter> _heroPresenters = new List<HeroPresenter>();
         private readonly List<Button> _notOwnedHeroViews = new List<Button>();
+        private ToastPresenter _toastPresenter;
 
         private void Awake()
         {
             heroPresenterTemplate.gameObject.SetActive(false);
             notOwnedHeroViewTemplate.gameObject.SetActive(false);
             _heroConfiguration = GameContext.Instance.heroConfiguration;
+            _toastPresenter = ToastPresenter.Instance;
         }
 
         private void Start()
@@ -89,7 +91,7 @@ namespace HeroFighter.Runtime.Presenters
 
             if (_heroConfiguration.selectedHeroIdentifiers.Count == Constants.MaxSelectableHeroCount)
             {
-                //TODO toast this here
+                _toastPresenter.ToastMessage($"You have reached equip limit!");
                 return;
             }
             
@@ -99,19 +101,19 @@ namespace HeroFighter.Runtime.Presenters
         
         private void OnNotOwnedHeroViewClicked()
         {
-            //TODO toast this here
+            _toastPresenter.ToastMessage($"New hero unlock every {_heroConfiguration.unlockNewHeroEveryXLevel} battle.");
         }
         
         private void OnBattleClicked()
         {
             if (_heroConfiguration.selectedHeroIdentifiers.Count != Constants.MaxSelectableHeroCount)
             {
-                //TODO toast this here
+                _toastPresenter.ToastMessage($"You need to equip {Constants.MaxSelectableHeroCount} hero in order to battle!");
                 return;
             }
 
             _heroConfiguration.SaveSelectedHeroes(); //Not necessary though convenient for the player
-            SceneManager.LoadScene(GameContext.Instance.battleSceneIndex);
+            SceneManager.LoadScene(GameContext.Instance.sceneConfiguration.battleSceneIndex);
         }
     }
 }

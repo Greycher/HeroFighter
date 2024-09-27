@@ -27,6 +27,7 @@ namespace HeroFighter.Runtime.Presenters
         [SerializeField] private float delayBeforeTurnStarts = 0.7f;
         [SerializeField] private float delayBeforeEnemyAttack = 2f;
 
+        private ToastPresenter _toastPresenter;
         private bool _playersTurn;
         private bool _battling;
         private bool _turnPlayed = true;
@@ -38,6 +39,8 @@ namespace HeroFighter.Runtime.Presenters
         private void Awake()
         {
             Assert.AreEqual(heroPresenters.Length, Constants.MaxSelectableHeroCount);
+            _toastPresenter = ToastPresenter.Instance;
+
             var hc = GameContext.Instance.heroConfiguration;
             PreparePlayerHeroes(hc);
             var totalLvl = CalculateTotalPlayerHeroLevel();
@@ -116,22 +119,16 @@ namespace HeroFighter.Runtime.Presenters
         {
             if (!_battling)
             {
-                //TODO toast here
+                _toastPresenter.ToastMessage("Not battling at the moment!");
                 return;
             }
             
-            if (_turnPlayed)
+            if (!_playersTurn || _turnPlayed)
             {
-                //TODO toast here
+                _toastPresenter.ToastMessage("Wait for your turn!");
                 return;
             }
-
-            if (!_playersTurn)
-            {
-                //TODO toast here
-                return;
-            }
-
+            
             presenter.Attack(enemyHeroPresenter);
             EndTurn();
         }

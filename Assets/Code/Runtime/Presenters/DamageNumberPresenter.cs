@@ -1,19 +1,18 @@
-using System;
 using HeroFighter.Runtime.Views;
 using UnityEngine;
 using UnityEngine.Pool;
-using UnityEngine.Serialization;
 
 namespace HeroFighter.Runtime.Presenters
 {
     public class DamageNumberPresenter : MonoBehaviour
     {
-        [SerializeField] private DamageNumberEffectView damageNumberEffectPrefab;
+       [SerializeField] private DamageNumberEffectView damageNumberEffectTemplate;
         
         private ObjectPool<DamageNumberEffectView> _damageNumberPool;
 
         private void Awake()
         {
+            damageNumberEffectTemplate.gameObject.SetActive(false);
             _damageNumberPool = new(CreateFunc, ActionOnGet, ActionOnRelease);
         }
 
@@ -26,7 +25,7 @@ namespace HeroFighter.Runtime.Presenters
 
         private DamageNumberEffectView CreateFunc()
         {
-            return Instantiate(damageNumberEffectPrefab, transform);
+            return Instantiate(damageNumberEffectTemplate, transform);
         }
         
         private void ActionOnGet(DamageNumberEffectView effectView)

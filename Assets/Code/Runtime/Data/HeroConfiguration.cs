@@ -4,6 +4,7 @@ using HeroFighter.Runtime.Views;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Serialization;
 
 namespace HeroFighter.Runtime
 {
@@ -24,7 +25,7 @@ namespace HeroFighter.Runtime
         [Tooltip("If true, drag input will not be executed in the case of player dragging out of hero's rect.")]
         public bool cancelHoldInputOnDragOutside;
         public int experienceIncreasePerWin = 1;
-        public int getNewHeroEveryXLevel = 1;
+        public int unlockNewHeroEveryXLevel = 5;
         
         [NonSerialized] public readonly List<string> selectedHeroIdentifiers = new(Constants.MaxSelectableHeroCount);
 
