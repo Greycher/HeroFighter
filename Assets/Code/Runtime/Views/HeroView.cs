@@ -14,6 +14,7 @@ namespace HeroFighter.Runtime.Views
         [SerializeField, AnimatorState] private int defaultAnimState;
         [SerializeField, AnimatorState] private int selectedAnimState;
         [SerializeField, AnimatorState] private int attackAnimState;
+        [SerializeField, AnimatorState] private int deathAnimation;
 
         private RectTransform _rectTransform;
         private Canvas _canvas;
@@ -56,7 +57,12 @@ namespace HeroFighter.Runtime.Views
 
         public void OnAttack()
         {
-            animator.Play(attackAnimState, 0, 0);
+            animator.Play(attackAnimState);
+        }
+
+        public void OnDeath()
+        {
+            animator.Play(deathAnimation);
         }
 
         protected override void OnSinglePointerDown(PointerEventData eventData)

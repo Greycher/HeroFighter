@@ -5,6 +5,7 @@ using HeroFighter.Runtime.Views;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace HeroFighter.Runtime.Presenters
 {
@@ -19,7 +20,7 @@ namespace HeroFighter.Runtime.Presenters
         private DamageNumberPresenter _damageNumberPresenter;
 
         public UnityEvent<HeroPresenter> onClicked = new();
-        public UnityEvent<HeroPresenter> onDied = new();
+        public UnityEvent<HeroPresenter> onDeath = new();
         private bool _onHoldInputDetected;
         
         public HeroModel HeroModel => _heroModel;
@@ -36,8 +37,8 @@ namespace HeroFighter.Runtime.Presenters
             _damageNumberPresenter = damageNumberPresenter;
             heroModel.healthModel.LogHealth = logHealth;
             heroView.UpdateView(heroModel.heroDefinition.name);
-            _heroModel?.onDied.RemoveListener(OnDied);
-            _heroModel?.onDied.AddListener(OnDied);
+            _heroModel?.onDied.RemoveListener(OnDeath);
+            _heroModel?.onDied.AddListener(OnDeath);
         }
 
         private void OnEnable()
@@ -48,8 +49,8 @@ namespace HeroFighter.Runtime.Presenters
                 heroView.onPointerDrag.AddListener(OnPointerDrag);
             }
             heroView.onPointerUp.AddListener(OnPointerUp);
-            _heroModel?.onDied.RemoveListener(OnDied);
-            _heroModel?.onDied.AddListener(OnDied);
+            _heroModel?.onDied.RemoveListener(OnDeath);
+            _heroModel?.onDied.AddListener(OnDeath);
         }
 
         private void OnDisable()
@@ -58,26 +59,41 @@ namespace HeroFighter.Runtime.Presenters
             heroView.onPointerDown.RemoveListener(OnPointerDown);
             heroView.onPointerDrag.RemoveListener(OnPointerDrag);
             heroView.onPointerUp.RemoveListener(OnPointerUp);
-            _heroModel?.onDied.RemoveListener(OnDied);
+            _heroModel?.onDied.RemoveListener(OnDeath);
         }
         
         private void OnPointerDown(PointerEventData eventData)
         {
+            if (eventData.button is PointerEventData.InputButton.Right or PointerEventData.InputButton.Middle)
+            {
+                return;
+            }
+            
             _onHoldInputDetected = false;
             _holdInputCancelTokenSource = new CancellationTokenSource();
             ExecuteHoldInputAfterDelayAsync(_heroConfiguration.heroInfoInputHoldDuration, _holdInputCancelTokenSource.Token);
         }
         
-        private void OnPointerDrag(PointerEventData arg0, bool arg1)
+        private void OnPointerDrag(PointerEventData eventData, bool inside)
         {
-            if (_heroConfiguration.cancelHoldInputOnDragOutside)
+            if (eventData.button is PointerEventData.InputButton.Right or PointerEventData.InputButton.Middle)
             {
-                _holdInputCancelTokenSource.Cancel();
+                return;
+            }
+            
+            if (!inside && _heroConfiguration.cancelHoldInputOnDragOutside)
+            {
+                _holdInputCancelTokenSource?.Cancel();
             }
         }
 
         private void OnPointerUp(PointerEventData eventData, bool insideRect)
         {
+            if (eventData.button is PointerEventData.InputButton.Right or PointerEventData.InputButton.Middle)
+            {
+                return;
+            }
+            
             _holdInputCancelTokenSource.Cancel();
             if (insideRect && !_onHoldInputDetected)
             {
@@ -125,9 +141,10 @@ namespace HeroFighter.Runtime.Presenters
             onClicked.Invoke(this);
         }
 
-        private void OnDied()
+        private void OnDeath()
         {
-            onDied.Invoke(this);
+            heroView.OnDeath();
+            onDeath.Invoke(this);
         }
 
         public void Attack(HeroPresenter randomHero)

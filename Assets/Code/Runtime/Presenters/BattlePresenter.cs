@@ -105,7 +105,7 @@ namespace HeroFighter.Runtime.Presenters
                 var presenter = heroPresenters[i];
                 presenter.Present(hero, damageNumberPresenter);
                 presenter.onClicked.AddListener(OnPlayerHeroClicked);
-                presenter.onDied.AddListener(OnHeroDied);
+                presenter.onDeath.AddListener(OnHeroDied);
 
 
                 var healthPresenter = Instantiate(healthPresenterPrefab, presenter.transform);
@@ -117,6 +117,12 @@ namespace HeroFighter.Runtime.Presenters
 
         private void OnPlayerHeroClicked(HeroPresenter presenter)
         {
+            if (!AlivePlayerHeroes.Contains(presenter))
+            {
+                _toastPresenter.ToastMessage("Hero is dead!");
+                return;
+            }
+            
             if (!_battling)
             {
                 _toastPresenter.ToastMessage("Not battling at the moment!");
@@ -135,8 +141,6 @@ namespace HeroFighter.Runtime.Presenters
         
         private void OnHeroDied(HeroPresenter presenter)
         {
-            UnSubscribeHeroPresenterEvents(presenter);
-            presenter.HeroView.Interactable = false;
             var removed = AlivePlayerHeroes.Remove(presenter);
             Assert.IsTrue(removed);
         }
@@ -168,14 +172,9 @@ namespace HeroFighter.Runtime.Presenters
         {
             foreach (var presenter in heroPresenters)
             {
-                UnSubscribeHeroPresenterEvents(presenter);
+                presenter.onClicked.RemoveListener(OnPlayerHeroClicked);
+                presenter.onDeath.RemoveListener(OnHeroDied);
             }
-        }
-
-        private void UnSubscribeHeroPresenterEvents(HeroPresenter presenter)
-        {
-            presenter.onClicked.RemoveListener(OnPlayerHeroClicked);
-            presenter.onDied.RemoveListener(OnHeroDied);
         }
     }
 }
