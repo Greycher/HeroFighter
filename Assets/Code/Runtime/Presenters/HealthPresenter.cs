@@ -12,7 +12,7 @@ namespace HeroFighter.Runtime.Presenters
         public void Present(HealthModel healthModel)
         {
             _healthModel = healthModel;
-            healthView.UpdateView(GetHealthPercentage(healthModel));
+            healthView.UpdateView(GetHealthPercentage(healthModel), true);
             healthModel.onHealthChangedEvent.RemoveListener(OnHealthChanged);
             healthModel.onHealthChangedEvent.AddListener(OnHealthChanged);
         }

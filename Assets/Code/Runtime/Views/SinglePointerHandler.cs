@@ -6,34 +6,9 @@ namespace HeroFighter.Runtime.Views
 {
     public abstract class SinglePointerHandler : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
-        [SerializeField] private Graphic[] _graphics;
-        
         private const int c_nonPointer = int.MinValue;
         private int _pointerId = c_nonPointer;
         
-        public bool Interactable
-        {
-            get
-            {
-                foreach (var graphic in _graphics)
-                {
-                    if (graphic.raycastTarget)
-                    {
-                        return true;
-                    }
-                }
-                
-                return false;
-            }
-            set
-            {
-                foreach (var graphic in _graphics)
-                {
-                    graphic.raycastTarget = value;
-                }
-            }
-        }
-
         public void OnPointerDown(PointerEventData eventData)
         {
             if (_pointerId != c_nonPointer) 

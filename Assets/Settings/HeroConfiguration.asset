@@ -287,7 +287,7 @@ MonoBehaviour:
   experiencePerLevel: 5
   healthIncreasePerLevel: 0.1
   attackPowerIncreasePerLevel: 0.1
-  heroInfoInputHoldDuration: 3
+  heroInfoInputHoldDuration: 0.5
   cancelHoldInputOnDragOutside: 1
   experienceIncreasePerWin: 1
-  getNewHeroEveryXLevel: 5
+  unlockNewHeroEveryXLevel: 5

@@ -35,8 +35,8 @@ namespace HeroFighter.Runtime.Presenters
         {
             _heroModel = heroModel;
             _damageNumberPresenter = damageNumberPresenter;
-            heroModel.healthModel.LogHealth = logHealth;
-            heroView.UpdateView(heroModel.heroDefinition.name);
+            heroModel.HealthModel.LogHealth = logHealth;
+            heroView.UpdateView(heroModel.HeroDefinition.name);
             _heroModel?.onDied.RemoveListener(OnDeath);
             _heroModel?.onDied.AddListener(OnDeath);
         }
@@ -124,7 +124,7 @@ namespace HeroFighter.Runtime.Presenters
         {
             var view = Instantiate(_heroConfiguration.heroInfoPopupViewPrefab);
             view.OnCloseBtnClicked.AddListener(OnInfoPopupCloseClicked);
-            var def = HeroModel.heroDefinition;
+            var def = HeroModel.HeroDefinition;
             var xpLimit = _heroConfiguration.experiencePerLevel;
             var xp = _heroConfiguration.GetExperience(HeroModel.Identifier) % xpLimit;
             view.UpdateView(HeroView.ScreenPos, def.name, HeroModel.Level + 1, HeroModel.AttackPower, xp, xpLimit);

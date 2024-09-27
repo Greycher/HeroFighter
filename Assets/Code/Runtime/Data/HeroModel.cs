@@ -5,28 +5,31 @@ namespace HeroFighter.Runtime
 {
     public class HeroModel
     {
-        public readonly HeroDefinition heroDefinition;
-        public readonly HealthModel healthModel;
+        private readonly HeroDefinition _heroDefinition;
+        private readonly HealthModel _healthModel;
         
         private readonly HeroConfiguration _heroConfiguration;
 
         public readonly UnityEvent onDied = new();
 
+        public HeroDefinition HeroDefinition => _heroDefinition;
+        public HealthModel HealthModel => _healthModel;
         public int AttackPower { get; }
         public int Level { get; }
         public string Identifier { get; }
-        public bool Died => Mathf.Approximately(healthModel.Health, 0);
+        public int Health => _healthModel.Health;
+        public bool Died => Mathf.Approximately(Health, 0);
 
         public HeroModel(HeroConfiguration heroConfiguration, HeroDefinition heroDefinition, string identifier, int level, bool logHealth = false)
         {
             _heroConfiguration = heroConfiguration;
-            this.heroDefinition = heroDefinition;
+            this._heroDefinition = heroDefinition;
             Identifier = identifier;
             Level = level;
             AttackPower = CalculateAttackPower(level);
             var health = CalculateHealth(level);
-            healthModel = new HealthModel(health, logHealth);
-            healthModel.onHealthChangedEvent.AddListener(OnHealthChanged);
+            _healthModel = new HealthModel(health, logHealth);
+            _healthModel.onHealthChangedEvent.AddListener(OnHealthChanged);
         }
 
         private void OnHealthChanged(HealthModel healthModel)
@@ -45,7 +48,7 @@ namespace HeroFighter.Runtime
         
         private int CalculateAttackPower(int level)
         {
-            var ap = heroDefinition.attackPower;
+            var ap = _heroDefinition.attackPower;
             return Mathf.FloorToInt(ap + ap * _heroConfiguration.attackPowerIncreasePerLevel * level);
         }
 
@@ -57,7 +60,7 @@ namespace HeroFighter.Runtime
 
         private void TakeDamage(int attackPower)
         {
-            healthModel.Decrement(attackPower);
+            _healthModel.Decrement(attackPower);
         }
     }
 }

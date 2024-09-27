@@ -10,8 +10,7 @@ namespace HeroFighter.Runtime.Presenters
     public class LevelPresenter : MonoBehaviour
     {
         [SerializeField] private BattlePresenter battlePresenter;
-        [SerializeField] private LevelEndMenuView levelSuccessMenuView;
-        [SerializeField] private LevelEndMenuView levelFailMenuView;
+        [SerializeField] private LevelEndMenuView levelEndMenuView;
         [SerializeField] private float levelEndMenuOpenDelay = 1f;
 
         private readonly LevelModel _levelModel = new();
@@ -19,10 +18,15 @@ namespace HeroFighter.Runtime.Presenters
         private void Start()
         {
             battlePresenter.onBattleEnd.AddListener(OnBattleEnd);
-            levelSuccessMenuView.OnContinuePressed.AddListener(OnContinuePressed);
-            levelFailMenuView.OnContinuePressed.AddListener(OnContinuePressed);
+            levelEndMenuView.OnContinuePressed.AddListener(OnContinuePressed);
 
             battlePresenter.StartBattle();
+        }
+        
+        private void OnDestroy()
+        {
+            battlePresenter.onBattleEnd.RemoveListener(OnBattleEnd);
+            levelEndMenuView.OnContinuePressed.RemoveListener(OnContinuePressed);
         }
 
         private void OnContinuePressed()
@@ -39,35 +43,47 @@ namespace HeroFighter.Runtime.Presenters
             if (playCount % hc.unlockNewHeroEveryXLevel == 0)
             {
                 var unOwnedHeroes = hc.GetUnOwnedHeroIdentifiers();
-                hc.SetHeroOwned(unOwnedHeroes[Random.Range(0, unOwnedHeroes.Count)]);
+                if (unOwnedHeroes.Count > 0)
+                {
+                    var rndHeroId = unOwnedHeroes[Random.Range(0, unOwnedHeroes.Count)];
+                    hc.SetHeroOwned(rndHeroId);
+                    var heroName = hc.heroDefinitionCollection[rndHeroId].name;
+                    levelEndMenuView.EnableNewHeroView(heroName);
+                }
             }
             
             if (playerWin)
             {
                 foreach (var hero in battlePresenter.AlivePlayerHeroes)
                 {
-                    var id = hero.HeroModel.Identifier;
-                    hc.SetExperience(id, hc.GetExperience(id) + hc.experienceIncreasePerWin);
+                    var beforeHeroModel = hero.HeroModel;
+                    beforeHeroModel.HealthModel.Reset();
+                    var id = beforeHeroModel.Identifier;
+                    var beforeXP = hc.GetExperience(id);
+                    var afterXP = beforeXP + hc.experienceIncreasePerWin;
+                    hc.SetExperience(id, afterXP);
+
+                    var def = hc.heroDefinitionCollection[id];
+                    var afterHeroModel = new HeroModel(hc, def, id, hc.GetLevel(id));
+
+                    var view = levelEndMenuView.GetHeroStatUpView(def.name);
+                    if (beforeHeroModel.Level != afterHeroModel.Level)
+                    {
+                        view.AddLevelIncrease(beforeHeroModel.Level + 1, afterHeroModel.Level + 1);
+                        view.AddHealthIncrease(beforeHeroModel.HealthModel.InitialHealth, afterHeroModel.HealthModel.InitialHealth);
+                        view.AddAttackPowerIncrease(beforeHeroModel.AttackPower, afterHeroModel.AttackPower);
+                    }
+                    else
+                    {
+                        view.AddExperienceIncrease(beforeXP % hc.experiencePerLevel, afterXP % hc.experiencePerLevel);
+                    }
                 }
             }
             
             await UniTask.Delay(TimeSpan.FromSeconds(levelEndMenuOpenDelay));
             
-            if (playerWin)
-            {
-                levelSuccessMenuView.gameObject.SetActive(true);
-            }
-            else
-            {
-                levelFailMenuView.gameObject.SetActive(true);
-            }
-        }
-
-        private void OnDestroy()
-        {
-            battlePresenter.onBattleEnd.RemoveListener(OnBattleEnd);
-            levelSuccessMenuView.OnContinuePressed.RemoveListener(OnContinuePressed);
-            levelFailMenuView.OnContinuePressed.RemoveListener(OnContinuePressed);
+            levelEndMenuView.gameObject.SetActive(true);
+            levelEndMenuView.UpdateView(playerWin);
         }
     }
 }

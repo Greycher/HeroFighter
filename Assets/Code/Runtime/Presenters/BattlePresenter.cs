@@ -109,7 +109,7 @@ namespace HeroFighter.Runtime.Presenters
 
 
                 var healthPresenter = Instantiate(healthPresenterPrefab, presenter.transform);
-                healthPresenter.Present(hero.healthModel);
+                healthPresenter.Present(hero.HealthModel);
                 
                 AlivePlayerHeroes.Add(presenter);
             }
@@ -165,7 +165,7 @@ namespace HeroFighter.Runtime.Presenters
             enemyHeroPresenter.Present(hero, damageNumberPresenter);
             
             var healthPresenter = Instantiate(healthPresenterPrefab, enemyHeroPresenter.transform);
-            healthPresenter.Present(hero.healthModel);
+            healthPresenter.Present(hero.HealthModel);
         }
 
         private void OnDestroy()
